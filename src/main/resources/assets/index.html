@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Exam</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="#"></a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="sidenav">
+            <li><a href="#"></a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
+
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        <br><br>
+        <h1 class="header center orange-text">Examination portal</h1>
+        <div class="row center">
+            <h5 class="header col s12 light"></h5>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m6 offset-m3" id="login">
+        <div class="">
+            <form class="col s12" id="login-form" action="javascript:">
+                <div class="form-container card hoverable">
+                    <div class="card-content">
+                        <h3 class="teal-text">Login</h3>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="phone-or-email" name="phone-or-email" type="text" required class="validate">
+                                <label for="phone-or-email">Phone number or email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="login-password" name="password" type="password" required class="validate">
+                                <label for="login-password">Password</label>
+                            </div>
+                        </div>
+                        <div id="login-form-error" class="message-error"></div>
+                        <center>
+                            <button class="btn waves-effect waves-light teal" onclick="signIn()">Sign In
+                            </button>
+                            <br>
+                            <br>
+                            <a href="">Forgotten password?</a>
+                        </center>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col s12 m6 offset-m3" id="register" style="display: none">
+        <div class="">
+            <form class="col s12" id="register-form" action="javascript:">
+                <div class="form-container card hoverable">
+                    <div class="card-content">
+                        <h3 class="teal-text">Register</h3>
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="first_name" name="name-first" type="text" required class="validate">
+                                <label for="first_name">First Name</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input id="name" type="text" name="name-last" required class="validate">
+                                <label for="name">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="email" type="email" name="email" class="validate">
+                                <label for="email">Email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="phone" type="text" name="phone" required class="validate">
+                                <label for="phone">Phone number</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="password" type="password" name="password" required class="validate">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="password-confirm" type="password" required class="validate">
+                                <label for="password-confirm">Retype password</label>
+                            </div>
+                        </div>
+                        <div id="register-form-error" class="message-error"></div>
+                        <center>
+                            <button class="btn waves-effect waves-light teal" onclick="signUp()" type="submit"
+                                    name="action">Submit
+                            </button>
+                        </center>
+                        <a href="javascript:" class="waves-effect waves-light" onclick="showLogin()">Login if
+                            already registered
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row center" id="register-button">
+    <div>
+        <a href="#" class="btn-large waves-effect waves-light orange"
+           onclick="showSignUpForm()">Register</a></div>
+    <div id="separator-text"></div>
+</div>
+
+
+<footer class="page-footer orange">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Exam portal</h5>
+                <p class="grey-text text-lighten-4"></p>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            Made by <a class="orange-text text-lighten-3" href="">......</a>
+        </div>
+    </div>
+</footer>
+
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="js/materialize.js"></script>
+<script src="js/init.js"></script>
+<script src="js/homepage.js"></script>
+
+</body>
+</html>

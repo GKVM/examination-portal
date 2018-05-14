@@ -1,0 +1,27 @@
+# MongoDB properties
+mongoDbUri: mongodb://localhost:27017
+mongoDbDatabase: examination
+
+secret: ${JWT_SECRET:-secret}
+
+logging:
+  level: INFO
+
+viewRendererConfiguration:
+   .ftl:
+       strict_syntax: yes
+       whitespace_stripping: yes
+
+server:
+    applicationConnectors:
+    -   type: http
+        port: 9000
+    adminConnectors:
+    -   type: http
+        port: 9002
+
+# the key needs to match the suffix of the renderer
+viewRendererConfiguration:
+    .ftl:
+        strict_syntax: yes
+        whitespace_stripping: yes
