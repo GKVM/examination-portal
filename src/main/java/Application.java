@@ -18,6 +18,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import resource.CandidateResource;
+import resource.PathResource;
 import service.UserService;
 
 import javax.servlet.DispatcherType;
@@ -37,7 +38,7 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
 
     @Override
     public void initialize(Bootstrap<ExamConfiguration> bootstrap) {
-        bootstrap.addBundle(new AssetsBundle("/assets", "/assets", "index.html"));
+        bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html"));
         bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(new ViewBundle<ExamConfiguration>() {
             @Override
@@ -67,6 +68,7 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
 
 
         final CandidateResource candidateResource = new CandidateResource(userService);
+        final PathResource pathResource = new PathResource();
 
         //Initialize Resources
         environment.jersey().register(new AuthDynamicFeature(
@@ -79,7 +81,9 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         environment.jersey().register(candidateResource);
+        environment.jersey().register(pathResource);
         environment.jersey().setUrlPattern("/api");
+        //environment.jersey().setUrlPattern("/");
         //environment.healthChecks().register("mongodb connection", new MongoHealthCheck(mongoClient));
 
 //        environment.lifecycle().manage(mongoClientManager);

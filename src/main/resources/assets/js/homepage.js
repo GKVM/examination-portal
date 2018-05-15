@@ -14,6 +14,8 @@ function showLogin() {
 $('#login-form').onsubmit = signIn();*/
 
 function signUp() {
+    if($('#password').value() !== $('#password-confirm').value())
+        $('#register-form-error').html(JSON.parse(xhr.responseText).message);
     console.log("sign up");
     $.ajax({
         type: "POST",
@@ -22,7 +24,7 @@ function signUp() {
         dataType: "json",
         success: function (response) {
             console.log("success.");
-            window.location = "/list.html";
+            window.location = "/list";
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $('#register-form-error').html(JSON.parse(xhr.responseText).message);

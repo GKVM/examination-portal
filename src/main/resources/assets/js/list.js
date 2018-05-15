@@ -27,5 +27,5 @@ $(document).ready(function () {
 });
 
 function showMockTest() {
-    window.location = "/exam.html";
+    window.location = "/test.html";
 }
