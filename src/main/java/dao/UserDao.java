@@ -35,14 +35,35 @@ public class UserDao extends BasicDAO<User, ObjectId> {
         return Optional.ofNullable(user);
     }
 
-    public Optional<User> loginUser(String phone) {
-        final Query<User> query = this.createQuery()
-                .field("phone").equal(phone)
+    public Optional<User> getUserByEmail(String email) {
+        final User user = this.createQuery()
+                .field("email").equal(email)
+                .field("is_deleted").equal(false)
+                .get();
+        return Optional.ofNullable(user);
+    }
+
+    public Optional<User> getUserByPhoneOrEmail(String phone, String email) {
+        final Query<User> q = this.createQuery()
                 .field("is_deleted").equal(false);
-        User user = query.get();
+        q.or(
+                q.criteria("phone").equal(phone),
+                q.criteria("email").equal(email)
+        );
+        return Optional.ofNullable(q.get());
+    }
+
+    public Optional<User> loginUser(String phone, String email) {
+        final Query<User> q = this.createQuery()
+                .field("is_deleted").equal(false);
+        q.or(
+                q.criteria("phone").equal(phone),
+                q.criteria("email").equal(email)
+        );
+        User user = q.get();
         final UpdateOperations<User> update = this.createUpdateOperations();
         update.set("last_seen", System.currentTimeMillis());
-        this.updateFirst(query, update);
+        this.updateFirst(q, update);
         return Optional.ofNullable(user);
     }
 }

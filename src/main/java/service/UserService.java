@@ -38,8 +38,14 @@ public class UserService {
     public SignInResponse signup(String nameFirst, String nameLast, String email, String phone, String password) {
         userDao.getUserByPhone(phone)
                 .ifPresent(d -> {
-                    throw new WebApplicationException("User already registered.", Response.Status.BAD_REQUEST);
+                    throw new WebApplicationException("Phone number already registered.", Response.Status.BAD_REQUEST);
                 });
+
+        if (email != null)
+            userDao.getUserByEmail(email)
+                    .ifPresent(d -> {
+                        throw new WebApplicationException("The give email id is already registered.", Response.Status.BAD_REQUEST);
+                    });
 
         User user = new User(
                 new ObjectId(),
@@ -104,6 +110,7 @@ public class UserService {
         }
         return allTests;
     }
+
     private List<Test> allTests = new ArrayList<>();
 
     public void registerExam(ObjectId userId, ObjectId test) {

@@ -13,9 +13,20 @@ function showLogin() {
 /*$('#register-form').onsubmit = signUp();
 $('#login-form').onsubmit = signIn();*/
 
+let password = $('#password')[0];
+let confirm_password = $('#password-confirm')[0];
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
+function validatePassword() {
+    if (password.value !== confirm_password.value) {
+        confirm_password.setCustomValidity("Passwords Don't Match");
+    } else {
+        confirm_password.setCustomValidity('');
+    }
+}
+
 function signUp() {
-    if($('#password').value() !== $('#password-confirm').value())
-        $('#register-form-error').html(JSON.parse(xhr.responseText).message);
     console.log("sign up");
     $.ajax({
         type: "POST",
@@ -24,7 +35,7 @@ function signUp() {
         dataType: "json",
         success: function (response) {
             console.log("success.");
-            window.location = "/list";
+            window.location = "/list.html";
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $('#register-form-error').html(JSON.parse(xhr.responseText).message);

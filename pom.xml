@@ -171,7 +171,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>TimelineApplication</mainClass>
+                                    <mainClass>Application</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
