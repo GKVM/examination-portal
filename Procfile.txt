@@ -1,1 +1,1 @@
-web: java -Ddw.server.applicationConnectors[0].port=$PORT  -jar target/examination-1.0-SNAPSHOT.jar server examination.yml
+web: java -Ddw.server.applicationConnectors[0].port=$PORT -jar target/examination-1.0-SNAPSHOT.jar server examination.yml
