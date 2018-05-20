@@ -52,7 +52,7 @@ function signIn() {
 }
 
 window.onload = function () {
-    initilizeVideoRendering();
+    initializeVideoRendering();
     showCandidateInfo();
 };
 
@@ -63,7 +63,7 @@ function showCandidateInfo() {
     $('#username').text(user.name);
 }
 
-function initilizeVideoRendering() {
+function initializeVideoRendering() {
     let video = document.getElementById('video');
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');

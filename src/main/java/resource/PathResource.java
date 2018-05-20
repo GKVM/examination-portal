@@ -11,7 +11,6 @@ import java.io.InputStream;
 public class PathResource {
 
     public PathResource() {
-
     }
 
     @GET
