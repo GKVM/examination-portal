@@ -1,5 +1,27 @@
 $(document).ready(function () {
     console.log("fetching list of exams");
+    showCandidateInfo();
+    loadExamList();
+});
+
+let user;
+
+function showMockTest() {
+    window.location = "/exam.html";
+}
+
+function showAuthorize() {
+    window.location = "/authorize.html";
+}
+
+function showCandidateInfo() {
+    let serializedData = localStorage.getItem('user');
+    user = JSON.parse(serializedData);
+    $('#username').text(user.name);
+    $('#user-email-value').text(user.email);
+}
+
+function loadExamList() {
     $.ajax({
         type: "GET",
         url: `${baseUrl}/candidate/list`,
@@ -24,8 +46,4 @@ $(document).ready(function () {
             console.log(`Error in sign up ${xhr.responseText}`);
         }
     });
-});
-
-function showMockTest() {
-    window.location = "/exam.html";
 }

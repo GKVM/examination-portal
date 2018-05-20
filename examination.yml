@@ -1,5 +1,5 @@
 # MongoDB properties
-mongoDbUri: ${DATABASE_URI:mongodb://localhost:27017}
+mongoDbUri: mongodb://localhost:27017
 mongoDbDatabase: examination
 
 secret: ${JWT_SECRET:-secret}

@@ -16,20 +16,72 @@
     </nav>
 </header>
 <main>
-    <div class="container" id="exam-container">
-        <div class="container">
-            <h4 class="orange-text">Exam</h4>
+    <div class="" id="exam-container">
+        <!--<h4 class="orange-text">Exam</h4>-->
+        <div class="row">
+            <div class="col s12 m12 l3">
+                <div class="card">
 
-            <div class="">
-                <div class="">
-                    <video id="video" style="margin-left: 230px; position: absolute" width="320" height="240" preload autoplay loop muted></video>
-                    <canvas id="canvas" style="margin-left: 230px; position: absolute" width="320" height="240"></canvas>
+                    <div class="card-content">
+                        <div class="card-title">
+                            <span id="username"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col s12 m6 l12">
+                                <div class="center-block" style="width:320px; height:240px">
+                                    <video id="video" style="position: absolute;" width="320" height="240" preload
+                                           autoplay loop muted></video>
+                                    <canvas id="canvas" style="position: absolute" width="320" height="240"></canvas>
+                                </div>
+                            </div>
+                            <div class="col s12 m6 l12">
+                                <p>Current time: <span id="test-current-time"></span></p>
+                                <p>Time left: <span id="test-remaining-time"></span></p>
+                                <p>Time face not detected: <span id="test-face-not-detected-duration"></span></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="col s12 m12 l3">
+                <div class="card">
+                </div>
+            </div>
+            <div class="col s12 m12 l8">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="exam-container card" style="height: 600px; background: lightcyan;">
+                            <div class="card-content">
+                                <p>
+                                    1). Ut sea quidam everti tractatos. Tale graecis est ei, purto dissentias vim at. Et
+                                    persius
+                                    omnesque qualisque eam. Ex dico integre quo. Vide saepe duo ex, ei hinc quot sit. Cu
+                                    dicant ubique euripidis mei.
+                                </p>
+                                <form>
+                                    <label>
+                                        <input name="option-A" type="radio">
+                                        <span>Option</span>
+                                    </label>
 
-            <div class="row" style="margin-top: 300px">
-                <div class="col s12">
-                    <div class="exam-container" style="height: 600px; width: 100%; background: lightskyblue">
+                                    <label>
+                                        <input name="option-A" type="radio">
+                                        <span>Option</span>
+                                    </label>
+
+                                    <label>
+                                        <input name="option-A" type="radio">
+                                        <span>Option</span>
+                                    </label>
+                                </form>
+
+                            </div>
+                            <div class="card-action" style="padding-top: 30px">
+                                <div class="btn">Previous</div>
+                                <div class="btn">Clear response</div>
+                                <div class="btn">Submit and next</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -66,7 +66,7 @@ public class UserService {
 
             return new SignInResponse(
                     user.getId(),
-                    user.getName(),
+                    user.getCompleteName(),
                     user.getEmail(),
                     user.getPhone(),
                     jwtToken,
@@ -77,8 +77,8 @@ public class UserService {
         }
     }
 
-    public SignInResponse signin(String phone, String password) {
-        final User user = userDao.getUserByPhone(phone)
+    public SignInResponse signin(String phoneOrEmail, String password) {
+        final User user = userDao.getUserByPhoneOrEmail(phoneOrEmail, phoneOrEmail)
                 .orElseThrow(() -> new WebApplicationException("Invalid credentials", Response.Status.UNAUTHORIZED));
         if (!authenticate(password, user.getPassword())) {
             throw new WebApplicationException("Invalid credentials", Response.Status.UNAUTHORIZED);
@@ -90,7 +90,7 @@ public class UserService {
 
         return new SignInResponse(
                 user.getId(),
-                user.getName(),
+                user.getCompleteName(),
                 user.getEmail(),
                 user.getPhone(),
                 jwtToken,

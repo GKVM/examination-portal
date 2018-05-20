@@ -3,6 +3,8 @@ package resource;
 import dto.Test;
 import dto.response.SignInResponse;
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Range;
 import service.UserService;
 
 import javax.annotation.security.PermitAll;
@@ -28,8 +30,8 @@ public class CandidateResource {
     public SignInResponse signup(
             @NotNull @FormParam("name-first") String nameFirst,
             @NotNull @FormParam("name-last") String nameLast,
-            @NotNull @FormParam("phone") String phone,
-            @FormParam("email") String email,
+            @Range @NotNull @FormParam("phone") String phone,
+            @Email @FormParam("email") String email,
             @NotNull @FormParam("password") String password
     ) {
         return userService.signup(nameFirst, nameLast, email, phone, password);

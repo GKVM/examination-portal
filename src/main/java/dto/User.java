@@ -65,6 +65,10 @@ public class User implements Principal {
         this.isDeleted = false;
     }
 
+    public String getCompleteName() {
+        return String.format("%s %s", this.firstName, this.lastName);
+    }
+
     public ObjectId getId() {
         return id;
     }

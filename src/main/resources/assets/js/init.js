@@ -6,4 +6,4 @@
   }); // end of document ready
 })(jQuery); // end of jQuery name space
 
-var baseUrl = "/api";
+const baseUrl = "/api";

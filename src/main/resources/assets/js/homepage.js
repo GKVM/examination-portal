@@ -33,9 +33,15 @@ function signUp() {
         url: `${baseUrl}/candidate/signup`,
         data: $('#register-form').serialize(),
         dataType: "json",
-        success: function (response) {
+        success: function (json) {
             console.log("success.");
-            window.location = "/list.html";
+            if (json != null) {
+                console.log(json);
+                localStorage.setItem('user', JSON.stringify(json));
+                window.location = "/list.html";
+            } else {
+                $('#register-form-error').html("Something is not working");
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $('#register-form-error').html(JSON.parse(xhr.responseText).message);
@@ -51,9 +57,15 @@ function signIn() {
         url: `${baseUrl}/candidate/signin`,
         data: $('#login-form').serialize(),
         dataType: "json",
-        success: function (response) {
+        success: function (json) {
             console.log("success.");
-            window.location = "/list.html";
+            if (json != null) {
+                console.log(json);
+                localStorage.setItem('user', JSON.stringify(json));
+                window.location = "/list.html";
+            } else {
+                $('#login-form-error').html("Something broke.");
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $('#login-form-error').html(JSON.parse(xhr.responseText).message);
