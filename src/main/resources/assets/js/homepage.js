@@ -1,7 +1,9 @@
+'use strict';
+
 function showSignUpForm() {
     $('#register-button').hide();
     $('#login').hide();
-    $('#register').show(10)
+    $('#register').show(10);
 }
 
 function showLogin() {
@@ -13,8 +15,8 @@ function showLogin() {
 /*$('#register-form').onsubmit = signUp();
 $('#login-form').onsubmit = signIn();*/
 
-let password = $('#password')[0];
-let confirm_password = $('#password-confirm')[0];
+var password = $('#password')[0];
+var confirm_password = $('#password-confirm')[0];
 password.onchange = validatePassword;
 confirm_password.onkeyup = validatePassword;
 
@@ -30,10 +32,10 @@ function signUp() {
     console.log("sign up");
     $.ajax({
         type: "POST",
-        url: `${baseUrl}/candidate/signup`,
+        url: baseUrl + '/candidate/signup',
         data: $('#register-form').serialize(),
         dataType: "json",
-        success: function (json) {
+        success: function success(json) {
             console.log("success.");
             if (json != null) {
                 console.log(json);
@@ -43,9 +45,9 @@ function signUp() {
                 $('#register-form-error').html("Something is not working");
             }
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function error(xhr, ajaxOptions, thrownError) {
             $('#register-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log(`Error in sign up ${xhr.responseText}`);
+            console.log('Error in sign up ' + xhr.responseText);
         }
     });
 }
@@ -54,10 +56,10 @@ function signIn() {
     console.log("sign in");
     $.ajax({
         type: "POST",
-        url: `${baseUrl}/candidate/signin`,
+        url: baseUrl + '/candidate/signin',
         data: $('#login-form').serialize(),
         dataType: "json",
-        success: function (json) {
+        success: function success(json) {
             console.log("success.");
             if (json != null) {
                 console.log(json);
@@ -67,9 +69,9 @@ function signIn() {
                 $('#login-form-error').html("Something broke.");
             }
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function error(xhr, ajaxOptions, thrownError) {
             $('#login-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log(`Error in sign in ${xhr.responseText}`);
+            console.log('Error in sign in ' + xhr.responseText);
         }
     });
 }

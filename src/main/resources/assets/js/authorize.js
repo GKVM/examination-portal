@@ -11,9 +11,51 @@ function initializeVideoRendering() {
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
     tracking.track(video, tracker, {camera: true});
+    // isFaceDetected = false;
+    // needsReAuthorization = false;
+    // let faceOutTimer;
+    // globalTimer = 0;
+    // timer = 0;
+
     tracker.on('track', function (event) {
+        console.log('\n track ', event.data);
+
+        /*
+
+            if (!isFaceDetected) {
+                if (event.data.length) {
+                    isFaceDetected = true;
+                }
+            // no face detected
+            } else if (!event.data.length) {
+                if (globalTimer === 60000) {
+                    // terminate
+                }
+
+                if(!needsReAuthorization) {
+                    faceOutTimer = setInterval(
+                        function() {
+                            timer += 100;
+                            globalTimer += 100;
+                            if (timer === 10000) {
+                                timer = 0;
+                                needsReAuthorization = true;
+                                clearInterval(faceOutTimer);
+                            }
+                        },
+                        100
+                    );
+                }
+            } else if (needsReAuthorization) {
+                // call authorization api
+                needsReAuthorization = false;
+            }
+         */
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
+            console.log('\n rect ', rect);
+
             context.strokeStyle = '#a64ceb';
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
