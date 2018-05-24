@@ -2,8 +2,11 @@ package service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dao.RegistrationDao;
+import dao.TestDao;
 import dao.UserDao;
 import dto.JwtPayload;
+import dto.Registration;
 import dto.Test;
 import dto.User;
 import dto.response.SignInResponse;
@@ -26,6 +29,8 @@ import java.util.Optional;
 public class UserService {
 
     private UserDao userDao;
+    private TestDao testDao;
+    private RegistrationDao registrationDao;
     private transient final String secret;
     private transient final static long EXPIRY_MILLIS = 60 * 60 * 1000;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -113,8 +118,18 @@ public class UserService {
 
     private List<Test> allTests = new ArrayList<>();
 
-    public void registerExam(ObjectId userId, ObjectId test) {
+    public void registerExam(ObjectId userId, ObjectId testId) {
+        User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException("User not found."));
+        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));;
 
+        registrationDao.checkIfRegistrationExists(user.getId(), test.getId());
+        Registration registration = new Registration(new ObjectId(),
+                test.getId(),
+                user.getId(),
+                userId.toString(),
+                user.getPhone()
+                );
+        registrationDao.createEntry(registration);
     }
 
     private static boolean authenticate(String password_plaintext, String stored_hash) {

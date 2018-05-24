@@ -13,7 +13,6 @@ import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -21,9 +20,6 @@ import resource.CandidateResource;
 import resource.PathResource;
 import service.UserService;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import java.util.EnumSet;
 import java.util.Map;
 
 public class Application extends io.dropwizard.Application<ExamConfiguration> {

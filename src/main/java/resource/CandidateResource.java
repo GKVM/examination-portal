@@ -57,6 +57,6 @@ public class CandidateResource {
     @Path("enroll-exam")
     public void enroll(@NotNull @FormParam("user_id") ObjectId userId,
                        @NotNull @FormParam("test_id") ObjectId testId) {
-        userService.registerExam(null, null);
+        userService.registerExam(userId, testId);
     }
 }

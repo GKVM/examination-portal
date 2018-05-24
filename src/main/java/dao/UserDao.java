@@ -7,7 +7,9 @@ import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class UserDao extends BasicDAO<User, ObjectId> {
     public UserDao(Datastore datastore) {
@@ -20,6 +22,14 @@ public class UserDao extends BasicDAO<User, ObjectId> {
                 .field("is_deleted").equal(false)
                 .get();
         return Optional.ofNullable(user);
+    }
+
+    public List<User> getSpecificUsers(Set<ObjectId> userIdSet){
+        final List<User> users = this.createQuery()
+                .field("_id").in(userIdSet)
+                .field("is_deleted").equal(false)
+                .asList();
+        return users;
     }
 
     public Optional<ObjectId> createUser(User user) {
@@ -51,19 +61,5 @@ public class UserDao extends BasicDAO<User, ObjectId> {
                 q.criteria("email").equal(email)
         );
         return Optional.ofNullable(q.get());
-    }
-
-    public Optional<User> loginUser(String phone, String email) {
-        final Query<User> q = this.createQuery()
-                .field("is_deleted").equal(false);
-        q.or(
-                q.criteria("phone").equal(phone),
-                q.criteria("email").equal(email)
-        );
-        User user = q.get();
-        final UpdateOperations<User> update = this.createUpdateOperations();
-        update.set("last_seen", System.currentTimeMillis());
-        this.updateFirst(q, update);
-        return Optional.ofNullable(user);
     }
 }
