@@ -50,7 +50,7 @@ public class HubResource {
     }
 
     /**
-     * Uploads the response made by candidates to the server.
+     * Gets the response made by candidates to the server.
      */
     @POST
     @Path("upload_answers")
