@@ -4,7 +4,6 @@ import dao.QuestionDao;
 import dao.ResponseDao;
 import dao.TestDao;
 import dao.UserDao;
-import dto.Question;
 import dto.Test;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -29,8 +28,8 @@ public class HubAdminService {
     private final ResponseDao responseDao;
 
     public HubAdminService(
-            TestDao testDao,
             UserDao userDao,
+            TestDao testDao,
             QuestionDao questionDao,
             ResponseDao responseDao,
             final Client client,

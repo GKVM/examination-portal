@@ -2,13 +2,14 @@ import auth.Authenticator;
 import auth.JWTAuthFilter;
 import com.mongodb.MongoClient;
 import config.ExamConfiguration;
-import dao.MongoFactory;
-import dao.UserDao;
+import dao.*;
 import database.MongoClientManager;
 import dto.User;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -16,10 +17,13 @@ import io.dropwizard.views.ViewBundle;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import resource.CandidateResource;
-import resource.PathResource;
+import resource.*;
+import service.HubAdminService;
+import service.HubDeviceService;
+import service.HubService;
 import service.UserService;
 
+import javax.ws.rs.client.Client;
 import java.util.Map;
 
 public class Application extends io.dropwizard.Application<ExamConfiguration> {
@@ -57,13 +61,28 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
         final Datastore datastore = morphia.createDatastore(mongoClient, configuration.getMongoDbDatabase());
         datastore.ensureIndexes();
 
+        JerseyClientConfiguration jerseyClient1 = new JerseyClientConfiguration();
+        final Client jerseyClient = new JerseyClientBuilder(environment)
+                .using(jerseyClient1)
+                .build(getName());
+
         //Initialize DAOs
         final UserDao userDao = new UserDao(datastore);
+        final TestDao testDao = new TestDao(datastore);
+        final QuestionDao questionDao = new QuestionDao(datastore);
+        final RegistrationDao registrationDao = new RegistrationDao(datastore);
+        final ResponseDao responseDao = new ResponseDao(datastore);
+
 
         final UserService userService = new UserService(userDao, configuration.getSecret());
-
+        final HubAdminService hubAdminService = new HubAdminService(userDao, testDao, questionDao, responseDao, jerseyClient, configuration.getSecret());
+        final HubDeviceService hubDeviceService = new HubDeviceService(testDao, userDao, questionDao, responseDao, registrationDao);
+        final HubService hubService = new HubService(userDao, questionDao, testDao, registrationDao, responseDao);
 
         final CandidateResource candidateResource = new CandidateResource(userService);
+        final HubAdminResource hubAdminResource = new HubAdminResource(hubAdminService);
+        final HubResource hubResource = new HubResource(hubService);
+        final HubDeviceResource hubDeviceResource = new HubDeviceResource(hubDeviceService);
         final PathResource pathResource = new PathResource();
 
         //Initialize Resources
@@ -78,6 +97,10 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         environment.jersey().register(candidateResource);
         environment.jersey().register(pathResource);
+        environment.jersey().register(hubAdminResource);
+        environment.jersey().register(hubResource);
+        environment.jersey().register(hubDeviceResource);
+
         environment.jersey().setUrlPattern("/api");
         //environment.jersey().setUrlPattern("/");
         //environment.healthChecks().register("mongodb connection", new MongoHealthCheck(mongoClient));

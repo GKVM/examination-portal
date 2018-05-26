@@ -6,10 +6,7 @@ import org.bson.types.ObjectId;
 import service.HubDeviceService;
 
 import javax.validation.Valid;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -23,11 +20,12 @@ public class HubDeviceResource {
     }
 
     @POST
+    @Path("login")
     public LoginToExam loginForExam(
-            @QueryParam("registration") String registrationId,
-            @QueryParam("password") String password
+            @FormParam("registration") String registrationId,
+            @FormParam("password") String password
     ){
-        return hubDeviceService.login(registrationId,password);
+        return hubDeviceService.login(registrationId, password);
     }
 
     @GET
