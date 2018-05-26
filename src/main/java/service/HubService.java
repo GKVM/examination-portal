@@ -47,9 +47,9 @@ public class HubService {
     /**
      * get response.
      */
-    public void saveResponse(List<Responses> responses) {
-        responses.forEach(response ->
-                responseDao.saveResponse(response));
+    public void saveResponse(List<Responses> responsesList) {
+        responsesList.forEach(responses ->
+                responseDao.saveResponse(responses));
     }
 
     /**
@@ -61,7 +61,7 @@ public class HubService {
         Set<ObjectId> userIds = registrations.stream().map(Registration::getUserId).collect(Collectors.toSet());
         List<User> registeredUsers = userDao.getSpecificUsers(userIds);
         HashMap<ObjectId, User> userIdMap = new HashMap<>();
-        registeredUsers.forEach(candidate ->userIdMap.put(candidate.getId(), candidate));
+        registeredUsers.forEach(candidate -> userIdMap.put(candidate.getId(), candidate));
         List<UserDetailed> candidateResource = registrations.stream().map(registrationEntry -> {
             User user = userIdMap.get(registrationEntry.getUserId());
             return new UserDetailed(
@@ -70,7 +70,7 @@ public class HubService {
                     registrationEntry.getRegistration(),
                     user.getPhone(),
                     user.getPicture()
-                    );
+            );
         }).collect(Collectors.toList());
         return candidateResource;
     }

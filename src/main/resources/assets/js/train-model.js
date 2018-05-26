@@ -1,6 +1,50 @@
 window.onload = function () {
     initializeVideoRendering();
+    var options = {
+        beforeSubmit: showRequest, // pre-submit callback
+        success: showResponse // post-submit callback
+    };
+    // bind to the form's submit event
+    $('#frmUploader').submit(function () {
+        $(this).ajaxSubmit(options); // always return false to prevent standard browser submit and page navigation
+        return false;
+    });
 };
+
+// pre-submit callback
+function showRequest(formData, jqForm, options) {
+    alert('Uploading is starting.');
+    return true;
+}
+
+// post-submit callback
+function showResponse(responseText, statusText, xhr, $form) {
+    alert('status: ' + statusText + '\n\nresponseText: \n' + responseText);
+}
+
+
+function uploadImage() {
+    $.ajax({
+        type: "POST",
+        url: baseUrl + '/candidate/signin',
+        data: $('#login-form').serialize(),
+        dataType: " multipart/form-data",
+        success: function success(json) {
+            console.log("success.");
+            if (json != null) {
+                console.log(json);
+                localStorage.setItem('user', JSON.stringify(json));
+                window.location = "/list.html";
+            } else {
+                $('#login-form-error').html("Something broke.");
+            }
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            $('#login-form-error').html(JSON.parse(xhr.responseText).message);
+            console.log('Error in sign in ' + xhr.responseText);
+        }
+    });
+}
 
 function initializeVideoRendering() {
     let video = document.getElementById('video');
@@ -79,7 +123,7 @@ function saveFullFrame() {
     /*document.getElementById("theimage").src = canvas.toDataURL();*/
 }
 
-function takeSnap(){
+function takeSnap() {
     console.log("taking snap");
     let snap = captureCanvas();
     console.log(snap);
@@ -87,11 +131,11 @@ function takeSnap(){
     bannerImg.src = snap
 }
 
-function captureCanvas(){
+function captureCanvas() {
     let canvas = document.getElementById('canvas');
     if (canvas.getContext) {
         let ctx = canvas.getContext("2d");
-        return  canvas.toDataURL("image/png");
+        return canvas.toDataURL("image/png");
     }
 }
 

@@ -104,23 +104,15 @@ public class UserService {
     }
 
     public List<Test> listExam() {
-        int count = 4;
-        for (int i = 0; i < count; ++i) {
-            Test test = new Test(
-                    new ObjectId(),
-                    "Test",
-                    new Date()
-            );
-            allTests.add(test);
-        }
-        return allTests;
+        List<Test> list = testDao.allTest();
+        return null;
     }
 
     private List<Test> allTests = new ArrayList<>();
 
     public void registerExam(ObjectId userId, ObjectId testId) {
         User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException("User not found."));
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));;
+        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));
 
         registrationDao.checkIfRegistrationExists(user.getId(), test.getId());
         Registration registration = new Registration(new ObjectId(),
@@ -128,7 +120,7 @@ public class UserService {
                 user.getId(),
                 userId.toString(),
                 user.getPhone()
-                );
+        );
         registrationDao.createEntry(registration);
     }
 

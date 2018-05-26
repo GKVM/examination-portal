@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Exam</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
 <body>
 <header>
     <nav class="light-blue lighten-1" role="navigation">
@@ -50,36 +58,42 @@
             <div class="col s12 m12 l9 ">
                 <div class="row">
                     <div class="col s12">
-                        <div class="exam-container card" style="height: 600px; background: lightcyan;">
+                        <div class="exam-container card">
                             <div class="card-content">
-                                <p>
+                                <span id="question-number"></span>
+                                <p id="question">
                                     1). Ut sea quidam everti tractatos. Tale graecis est ei, purto dissentias vim at. Et
                                     persius
                                     omnesque qualisque eam. Ex dico integre quo. Vide saepe duo ex, ei hinc quot sit. Cu
                                     dicant ubique euripidis mei.
                                 </p>
                                 <form>
-                                    <label>
-                                        <input name="option-A" type="radio">
-                                        <span>Option</span>
-                                    </label>
-
-                                    <label>
-                                        <input name="option-A" type="radio">
-                                        <span>Option</span>
-                                    </label>
-
-                                    <label>
-                                        <input name="option-A" type="radio">
-                                        <span>Option</span>
-                                    </label>
+                                    <div class="row">
+                                        <label>
+                                            <input name="option-A" type="radio">
+                                            <span id="option1">Option</span>
+                                        </label>
+                                    </div>
+                                    <div class="row">
+                                        <label>
+                                            <input name="option-B" type="radio">
+                                            <span id="option2">Option</span>
+                                        </label>
+                                    </div>
+                                    <div class="row">
+                                        <label>
+                                            <input name="option-C" type="radio">
+                                            <span id="option3">Option</span>
+                                        </label>
+                                    </div>
                                 </form>
-
                             </div>
                             <div class="card-action" style="padding-top: 30px">
-                                <div class="btn">Previous</div>
-                                <div class="btn">Clear response</div>
-                                <div class="btn">Submit and next</div>
+                                <div class="btn" id="previous-question-btn" onclick="previousQuestion()">Previous</div>
+                                <div class="btn" id="clear-response-btn" onclick="clearResponse()">Clear response</div>
+                                <div class="btn" id="submit-next-question-btn" onclick="submitAndNext()">Submit and
+                                    next
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,7 +114,7 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-            Made by <a class="orange-text text-lighten-3" href="">......</a>
+            <!--Made by <a class="orange-text text-lighten-3" href="">......</a>-->
         </div>
     </div>
 </footer>
@@ -116,12 +130,4 @@
 <!--<script src="assets/stats.min.js"></script>-->
 
 </body>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-    <title>Exam</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-</head>
 </html>

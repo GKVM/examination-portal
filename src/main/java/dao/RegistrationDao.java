@@ -6,6 +6,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RegistrationDao extends BasicDAO<Registration, ObjectId> {
     public RegistrationDao(Datastore datastore) {
@@ -15,6 +16,11 @@ public class RegistrationDao extends BasicDAO<Registration, ObjectId> {
     public Boolean createEntry(Registration registration) {
         this.save(registration);
         return Boolean.TRUE;
+    }
+
+    public Optional<Registration> getRegistration(String objectId, String p){
+        // TODO: 26/5/18
+        return null;
     }
 
     public List<Registration> getAllRegistrationForTest(ObjectId testId) {

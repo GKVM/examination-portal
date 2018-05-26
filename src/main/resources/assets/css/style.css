@@ -31,3 +31,8 @@
 .with-border {
     border: 1px solid #2ab7a9;
 }
+
+.exam-container {
+    height: 600px;
+    background: lightcyan;
+}

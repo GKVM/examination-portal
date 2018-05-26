@@ -12,40 +12,31 @@ import org.mongodb.morphia.annotations.Id;
 import java.util.List;
 
 public class Question {
-    @Id
-    @JsonSerialize(using = ObjectIdSerializer.class)
-    @JsonDeserialize(using = ObjectIdDeserializer.class)
-    private ObjectId id;
-    private ObjectId userId;
-    private ObjectId testId;
-    private List<Response> responses;
+    private Integer num;
+    private String question;
+    private String optiona;
+    private String optionb;
+    private String optionc;
+    private String optiond;
 
     @JsonCreator
     public Question(
-            @JsonProperty("id") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId id,
-            @JsonProperty("userId") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId userId,
-            @JsonProperty("testId") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId testId,
-            @JsonProperty("registration") List<Response> responses
+            @JsonProperty("num") Integer num,
+            @JsonProperty("question") String question,
+            @JsonProperty("optiona") String optiona,
+            @JsonProperty("optionb") String optionb,
+            @JsonProperty("optionc") String optionc,
+            @JsonProperty("optiond") String optiond
     ) {
-        this.id = id;
-        this.userId = userId;
-        this.testId = testId;
-        this.responses = responses;
+        this.num = num;
+        this.question = question;
+        this.optiona = optiona;
+        this.optionb = optionb;
+        this.optionc = optionc;
+        this.optiond = optiond;
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public ObjectId getUserId() {
-        return userId;
-    }
-
-    public ObjectId getTestId() {
-        return testId;
-    }
-
-    public List<Response> getResponses() {
-        return responses;
+    public Integer getNum() {
+        return num;
     }
 }
