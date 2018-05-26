@@ -29,7 +29,6 @@
         <div class="row">
             <div class="col s12 m12 l3">
                 <div class="card">
-
                     <div class="card-content">
                         <div class="card-title">
                             <span id="username"></span>
@@ -60,33 +59,55 @@
                     <div class="col s12">
                         <div class="exam-container card">
                             <div class="card-content">
-                                <span id="question-number"></span>
-                                <p id="question">
-                                    1). Ut sea quidam everti tractatos. Tale graecis est ei, purto dissentias vim at. Et
-                                    persius
-                                    omnesque qualisque eam. Ex dico integre quo. Vide saepe duo ex, ei hinc quot sit. Cu
-                                    dicant ubique euripidis mei.
-                                </p>
-                                <form>
-                                    <div class="row">
-                                        <label>
-                                            <input name="option-A" type="radio">
-                                            <span id="option1">Option</span>
-                                        </label>
+                                <div class="row">
+                                    <div class="col s12">
+                                        <div>Question: <span id="question-number">1</span></div>
+                                        <div id="question" class="question">
+                                            Ut sea quidam everti tractatos. Tale graecis est ei, purto dissentias
+                                            vim at. Et
+                                            persius
+                                            omnesque qualisque eam. Ex dico integre quo. Vide saepe duo ex, ei hinc quot
+                                            sit. Cu
+                                            dicant ubique euripidis mei.
+                                        </div>
+                                        <div class="row"></div>
+                                        <form action="#">
+                                            <p>
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <label>
+                                                        <input name="options" class="options" type="radio" value="a"/>
+                                                        <span id="option1">Option</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <label>
+                                                        <input name="options" class="options" type="radio" value="b"/>
+                                                        <span id="option2">Option</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <label>
+                                                        <input name="options" class="options" type="radio" value="c"/>
+                                                        <span id="option3">Option</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <label>
+                                                        <input name="options" class="options" type="radio" value="c"/>
+                                                        <span id="option4">Option</span>
+                                                    </label>
+                                                    </p></div>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div class="row">
-                                        <label>
-                                            <input name="option-B" type="radio">
-                                            <span id="option2">Option</span>
-                                        </label>
-                                    </div>
-                                    <div class="row">
-                                        <label>
-                                            <input name="option-C" type="radio">
-                                            <span id="option3">Option</span>
-                                        </label>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                             <div class="card-action" style="padding-top: 30px">
                                 <div class="btn" id="previous-question-btn" onclick="previousQuestion()">Previous</div>

@@ -7,7 +7,7 @@ function signIn() {
     console.log("sign in");
     $.ajax({
         type: "POST",
-        url: baseUrl + '/hub/signin',
+        url: baseUrl + '/device/login',
         data: $('#login-form').serialize(),
         dataType: "json",
         success: function success(json) {
@@ -15,7 +15,7 @@ function signIn() {
             if (json != null) {
                 console.log(json);
                 localStorage.setItem('user', JSON.stringify(json));
-                window.location = "/exam.html";
+                window.location = "/authorize.html";
             } else {
                 $('#login-form-error').html("Something broke.");
             }

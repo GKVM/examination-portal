@@ -3,22 +3,74 @@ let user = {
     'exam_name': "Example examination",
     'question_id': "Example examination",
 };
+let test = {
+    'id': "",
+    'name': "Mock test name"
+};
 let questions = [
     {
         'number': 1,
-        'question': "ushdfsn csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "sjdjsodif oidfos",
-        'optionb': "sjdjsodif oidfos",
-        'optionc': "sjdjsodif oidfos",
-        'optiond': "sjdjsodif oidfos"
+        'question': "ushdfsn1 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "sdfs oidfos",
+        'optionb': "sdfert oidfos",
+        'optionc': "kfpokd oidfos",
+        'optiond': "pdfpgo oidfos"
+    },
+    {
+        'number': 2,
+        'question': "eijoirjg2 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
+    },
+    {
+        'number': 3,
+        'question': "wpkwe 3csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
+    },
+    {
+        'number': 4,
+        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
+    },
+    {
+        'number': 5,
+        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
+    },
+    {
+        'number': 6,
+        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
+    },
+    {
+        'number': 7,
+        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
+        'optiona': "poepgok oidfos",
+        'optionb': "psokpdfo oidfos",
+        'optionc': "dpjpgofkp oidfos",
+        'optiond': "eopogkpo oidfos"
     }
 ];
 let responses = [];
 let currentQuestionNumber = 1;
-const numberOfQuestions = 1;
+const numberOfQuestions = questions.length;
 
 window.onload = function () {
-        /*initializeVideoRendering();*/
+    /*initializeVideoRendering();*/
     showCandidateInfo();
     getQuestionsAndShowQuestions();
     renderFromNumber(1);
@@ -55,30 +107,52 @@ function initializeVideoRendering() {
 }
 
 function showCandidateInfo() {
-    let serializedData = localStorage.getItem('user');
-    user = JSON.parse(serializedData);
-    console.log("User " + user);
-    $('#username').text(user.name);
+    /*    let serializedData = localStorage.getItem('user');
+        user = JSON.parse(serializedData);
+        console.log("User " + user);
+        $('#username').text(user.name);*/
+}
+
+function getQuestionsAndShowQuestions() {
+    // let questionsSerialized = localStorage.getItem('questions');
+    //let questionsResponse = JSON.parse(questionsSerailized);
+    console.log("Loaded questions");
+    //show question links
+    questions.forEach(function (question) {
+    })
 }
 
 function renderFromNumber(number) {
-    let question = questions.first();
+    currentQuestionNumber = number;
+    let question = questions.find(x => x.number === number);
 
-/*    $('#previous-question-btn').disable();
-    $('#clear-response-btn').disable();
-    $('#submit-next-question-btn').disable();*/
+    $('#previous-question-btn').prop("onclick", null);
+    $('#clear-response-btn').prop("onclick", null);
+    $('#submit-next-question-btn').prop("onclick", null);
+    $('#previous-question-btn').click( null);
+    $('#clear-response-btn').click( null);
+    $('#submit-next-question-btn').click( function () {});
+
+    $('#number').text(number);
 
     $('#question').text(question.question);
     $('#option1').text(question.optiona);
     $('#option2').text(question.optionb);
     $('#option3').text(question.optionc);
+    $('#option4').text(question.optiond);
 
-/*    $('#previous-question-btn').enable();
-    $('#clear-response-btn').enable();
-    $('#submit-next-question-btn').enable();*/
+    $('#previous-question-btn').click(function () {
+        previousQuestion()
+    });
+    $('#clear-response-btn').click(function () {
+        clearResponse()
+    });
+    $('#submit-next-question-btn').click(function () {
+        submitAndNext()
+    });
 }
 
-function submitResponseFinal(){
+function submitResponseFinal() {
     console.log("Submitting response");
     $.ajax({
         type: "POST",
@@ -101,9 +175,9 @@ function submitResponseFinal(){
 }
 
 function submitOneResponse() {
-    console.log("submit all response");
+    console.log("submit response");
     //@todo Save response in local storage.
-    $.ajax({
+    /*$.ajax({
         type: "POST",
         url: baseUrl + '/hub/upload',
         data: {
@@ -118,12 +192,12 @@ function submitOneResponse() {
             $('#login-form-error').html(JSON.parse(xhr.responseText).message);
             console.log('Error sending answer' + xhr.responseText);
         }
-    });
+    });*/
 }
 
 function previousQuestion() {
     console.log("previous");
-    if (currentQuestionNumber !== 1) return;
+    if (currentQuestionNumber <= 1) return;
     renderFromNumber(currentQuestionNumber - 1)
 }
 
@@ -141,15 +215,16 @@ function nextQuestion() {
 
 function clearResponse() {
     console.log("Clear response");
-    //call clear response endpoint to clear.
+    $('.options').prop('checked', false);
 }
 
-function getQuestionsAndShowQuestions() {
-    let questionsSerialized = localStorage.getItem('questions');
-    let questionsResponse = JSON.parse(questionsSerailized);
-    console.log("Loaded questions");
-    //show question links
-    questionsResponse.questions.forEach(function (question) {
-    })
+//===internal
+function filteredArray(arr, key, value) {
+    const newArray = [];
+    for (i = 0, l = arr.length; i < l; i++) {
+        if (arr[i][key] === value) {
+            newArray.push(arr[i]);
+        }
+    }
+    return newArray;
 }
-

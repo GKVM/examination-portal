@@ -18,7 +18,9 @@ public class RegistrationDao extends BasicDAO<Registration, ObjectId> {
         return Boolean.TRUE;
     }
 
-    public Optional<Registration> getRegistration(String objectId, String p){
+    public Optional<Registration> getRegistration(String registration){
+        Registration registrationInfo = this.createQuery()
+                .get();
         // TODO: 26/5/18
         return null;
     }

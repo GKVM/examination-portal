@@ -5,6 +5,23 @@ $(document).ready(function () {
 });
 
 let user;
+let tests = [
+    {
+        "name": "test one",
+        "organization": "test organization",
+        "is_applied": "false"
+    },
+    {
+        "name": "test two",
+        "organization": "test organization",
+        "is_applied": "false"
+    },
+    {
+        "name": "test one",
+        "organization": "test organization",
+        "is_applied": "false"
+    }
+];
 
 function showMockTest() {
     window.location = "/exam.html";
@@ -19,6 +36,25 @@ function showCandidateInfo() {
     user = JSON.parse(serializedData);
     $('#username').text(user.name);
     $('#user-email-value').text(user.email);
+}
+
+function showExam(exam) {
+
+    let statusString = "";
+    switch (exam.is_applied) {
+        case "false":
+            statusString = '<a href="javascript:;" class="btn secondary-content">Apply</a>';
+            break;
+        case "true":
+            statusString = '<a href="javascript:;" class="btn secondary-content">Already Applied</a>';
+            break;
+    }
+
+    $('#list-collection').append(`<li class="collection-item avatar">
+                            <img src="images/yuna.jpg" alt="" class="circle">
+                            <span class="title">` + exam.name + `</span>
+                            <p>` + exam.organization + ` <br>
+                            </p>` + statusString+`</li>`)
 }
 
 function loadExamList() {
@@ -46,4 +82,8 @@ function loadExamList() {
             console.log(`Error in sign up ${xhr.responseText}`);
         }
     });
+
+    tests.forEach(function (test) {
+        showExam(test)
+    })
 }
