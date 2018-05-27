@@ -9,9 +9,8 @@ let currentQuestionNumber = 1;
 let responses = [];
 
 window.onload = function () {
-    /*initializeVideoRendering();*/
+    //initializeVideoRendering();
     fetchInitialData();
-    showCandidateInfo();
 };
 
 function fetchInitialData() {
@@ -19,65 +18,13 @@ function fetchInitialData() {
     info = JSON.parse(serializedData);
     console.log("User ");
     console.log(info);
-    getQuestions()
-    //getMockTestInfo();
-}
-
-function getMockTestInfo() {
-    //this is mock
-    //move to login.js
-    $.ajax({
-        type: "POST",
-        data: {
-            'registration': "",
-            'password': ""
-        },
-        url: baseUrl + '/device/login',
-        dataType: "json",
-        success: function success(json) {
-            if (json != null) {
-                info = json;
-                console.log(json);
-                localStorage.setItem('user', JSON.stringify(json));
-                getQuestions();
-            } else {
-                console.log('')
-            }
-        },
-        error: function error(xhr, ajaxOptions, thrownError) {
-            //alert("Error" + xhr.responseText);
-            console.log('Error in singin ' + xhr.responseText);
-        }
-    });
-}
-
-function getQuestions() {
-    //this is mock
-    //move to login.js
-    $.ajax({
-        type: "GET",
-        data: {
-            'test': info.testId
-        },
-        url: baseUrl + '/device/questions',
-        success: function success(json) {
-            if (json != null) {
-                localStorage.setItem('questions', JSON.stringify(questions));
-                questions = json.questionList;
-                renderFromNumber(1)
-            }
-        },
-        error: function error(xhr, ajaxOptions, thrownError) {
-            //alert("Error" + xhr.responseText);
-            console.log('Error in getting questions in ' + xhr.responseText);
-        }
-    });
+    showCandidateInfo();
+    questions = JSON.parse(localStorage.getItem("questions"));
+    numberOfQuestions = questions.length;
+    renderFromNumber(1);
 }
 
 function showCandidateInfo() {
-    /*    let serializedData = localStorage.getItem('user');
-        user = JSON.parse(serializedData);
-        console.log("User " + user);*/
     $('#username').text(info.name);
 }
 
@@ -107,7 +54,7 @@ function initializeVideoRendering() {
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
 
-function getQuestionsAndShowQuestions() {
+function showQuestionLinks() {
     // let questionsSerialized = localStorage.getItem('questions');
     //let questionsResponse = JSON.parse(questionsSerailized);
     console.log("Loaded questions");
@@ -120,29 +67,26 @@ function renderFromNumber(number) {
     currentQuestionNumber = number;
     let question = questions.find(x => x.number === number);
 
-    $('#previous-question-btn').prop("onclick", null);
-    $('#clear-response-btn').prop("onclick", null);
-    $('#submit-next-question-btn').prop("onclick", null);
-    $('#previous-question-btn').click(null);
-    $('#clear-response-btn').click(null);
-    $('#submit-next-question-btn').click(function () {
-    });
+    $('#previous-question-btn').off('click');
+    $('#clear-response-btn').off('click');
+    $('#submit-next-question-btn').off('click');
 
-    $('#number').text(number);
+    $('#question-number').text(number);
 
     $('#question').text(question.question);
     $('#option1').text(question.optiona);
     $('#option2').text(question.optionb);
     $('#option3').text(question.optionc);
     $('#option4').text(question.optiond);
+    $('.options').prop('checked', false);
 
-    $('#previous-question-btn').click(function () {
+    $('#previous-question-btn').on('click', function () {
         previousQuestion()
     });
-    $('#clear-response-btn').click(function () {
+    $('#clear-response-btn').on('click', function () {
         clearResponse()
     });
-    $('#submit-next-question-btn').click(function () {
+    $('#submit-next-question-btn').on('click', function () {
         submitAndNext()
     });
 }

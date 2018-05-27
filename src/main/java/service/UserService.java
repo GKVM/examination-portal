@@ -116,11 +116,13 @@ public class UserService {
 
     public List<Test> listExamForUser(User user) {
         List<Test> examList = examinationDao.listExams();
-        List<Registration> registrationsOfUser = registrationDao.listRegistrations(user.getId());
-        Set<ObjectId> registeredIds = registrationsOfUser.stream().map(Registration::getId).collect(Collectors.toSet());
-
-        return examList.stream().peek(exam ->{
-            if(registeredIds.contains(exam.getId())){
+        List<Registration> registrationsOfUser = registrationDao
+                .listRegistrations(user.getId());
+        Set<ObjectId> registeredIds = registrationsOfUser.stream()
+                .map(Registration::getTestId)
+                .collect(Collectors.toSet());
+        return examList.stream().peek(exam -> {
+            if (registeredIds.contains(exam.getId())) {
                 exam.setHasApplied(true);
             }
         }).collect(Collectors.toList());
@@ -138,10 +140,10 @@ public class UserService {
         registrationDao.createEntry(registration);
     }
 
-    private static Integer getRandomNumber(){
+    private static Integer getRandomNumber() {
         Integer min = 1000000;
         Integer max = 9999999;
-        return  (int)(Math.random()*((max-min)+1))+min;
+        return (int) (Math.random() * ((max - min) + 1)) + min;
     }
 
     private static boolean authenticate(String password_plaintext, String stored_hash) {
@@ -149,7 +151,6 @@ public class UserService {
             logger.error("Invalid hash provided for comparison");
             return false;
         }
-
         return BCrypt.checkpw(password_plaintext, stored_hash);
     }
 

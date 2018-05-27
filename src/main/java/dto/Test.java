@@ -42,6 +42,7 @@ public class Test {
     ) {
         this.id = id;
         this.name = name;
+        this.hasApplied = false;
         this.isDeleted = false;
     }
 
@@ -54,6 +55,7 @@ public class Test {
     }
 
     public Boolean getHasApplied() {
+        if(hasApplied == null) return false;
         return hasApplied;
     }
 

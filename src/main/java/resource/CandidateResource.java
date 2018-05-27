@@ -48,6 +48,12 @@ public class CandidateResource {
     }
 
     @GET
+    @Path("lis")
+    public List<Test> examListOnly() {
+        return userService.listExam();
+    }
+
+    @GET
     @Path("list")
     public List<Test> examList(
             @Auth User user) {
