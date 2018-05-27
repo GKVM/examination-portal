@@ -1,8 +1,8 @@
 package service;
 
+import dao.ExaminationDao;
 import dao.QuestionDao;
 import dao.ResponseDao;
-import dao.TestDao;
 import dao.UserDao;
 import dto.Test;
 import org.bson.types.ObjectId;
@@ -22,19 +22,19 @@ public class HubAdminService {
     private final String CENTRAL_SERVER;
     private static final Logger logger = LoggerFactory.getLogger(HubService.class);
 
-    private final TestDao testDao;
+    private final ExaminationDao examinationDao;
     private final UserDao userDao;
     private final QuestionDao questionDao;
     private final ResponseDao responseDao;
 
     public HubAdminService(
             UserDao userDao,
-            TestDao testDao,
+            ExaminationDao examinationDao,
             QuestionDao questionDao,
             ResponseDao responseDao,
             final Client client,
             String central_server) {
-        this.testDao = testDao;
+        this.examinationDao = examinationDao;
         this.userDao = userDao;
         this.questionDao = questionDao;
         this.responseDao = responseDao;
@@ -43,7 +43,7 @@ public class HubAdminService {
     }
 
     public void fetchQuestions(ObjectId testId) {
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
         HashMap<String, String> data = new HashMap<>();
         data.put("test_id", testId.toString());
         requestPOST("/server/questions", data);
@@ -52,14 +52,14 @@ public class HubAdminService {
     }
 
     public void fetchAttendeeData(ObjectId testId) {
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
         HashMap<String, String> data = new HashMap<>();
         data.put("test_id", testId.toString());
         requestPOST("/server/candidates", data);
     }
 
     public void submitResponse(ObjectId testId) {
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test id is invalid"));
         HashMap<String, String> data = new HashMap<>();
         data.put("test_id", testId.toString());
     }

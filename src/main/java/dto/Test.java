@@ -14,34 +14,31 @@ import json.ObjectIdSerializer;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.NotSaved;
 
-import java.security.Principal;
-import java.util.Date;
 
 /**
  * Created by gkvm on 5/27/17.
  */
 @JsonSnakeCase
-@Entity(value = "test", noClassnameStored = true)
-public class Test implements Principal {
+@Entity(value = "exam", noClassnameStored = true)
+public class Test {
     @Id
     @JsonSerialize(using = ObjectIdSerializer.class)
     @JsonDeserialize(using = ObjectIdDeserializer.class)
     private ObjectId id;
     private String name;
-    private Date test;
-    @Property("is_deleted")
+    @NotSaved
+    private Boolean hasApplied;
     private Boolean isDeleted;
 
-    Test() {
+    public Test() {
     }
 
     @JsonCreator
     public Test(
             @JsonProperty("id") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId id,
-            @JsonProperty("name") String name,
-            @JsonProperty("test") Date test
+            @JsonProperty("name") String name
     ) {
         this.id = id;
         this.name = name;
@@ -52,23 +49,15 @@ public class Test implements Principal {
         return id;
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Boolean getHasApplied() {
+        return hasApplied;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    public void setHasApplied(Boolean hasApplied) {
+        this.hasApplied = hasApplied;
     }
 }

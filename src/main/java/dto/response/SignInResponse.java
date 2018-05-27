@@ -38,7 +38,6 @@ public class SignInResponse {
         this.expiresAt = expiresAt;
     }
 
-
     public ObjectId getId() {
         return id;
     }

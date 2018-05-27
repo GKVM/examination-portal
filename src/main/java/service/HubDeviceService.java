@@ -1,10 +1,7 @@
 package service;
 
 import dao.*;
-import dto.Questions;
-import dto.Registration;
-import dto.Responses;
-import dto.User;
+import dto.*;
 import dto.response.LoginToExam;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -18,20 +15,20 @@ public class HubDeviceService {
 
     private static final Logger logger = LoggerFactory.getLogger(HubService.class);
 
-    private final TestDao testDao;
+    private final ExaminationDao examinationDao;
     private final UserDao userDao;
     private final QuestionDao questionDao;
     private final ResponseDao responseDao;
     private final RegistrationDao registrationDao;
 
     public HubDeviceService(
-            TestDao testDao,
+            ExaminationDao examinationDao,
             UserDao userDao,
             QuestionDao questionDao,
             ResponseDao responseDao,
             RegistrationDao registrationDao
     ) {
-        this.testDao = testDao;
+        this.examinationDao = examinationDao;
         this.userDao = userDao;
         this.questionDao = questionDao;
         this.responseDao = responseDao;
@@ -39,7 +36,7 @@ public class HubDeviceService {
     }
 
     public LoginToExam login(String registration, String password) {
-        final Registration registrationInfo = registrationDao.getRegistration(registration)
+        Registration registrationInfo = registrationDao.getRegistration(registration)
                 .orElseThrow(() -> new WebApplicationException("Invalid credentials", javax.ws.rs.core.Response.Status.UNAUTHORIZED));
         if (!password.equals(registrationInfo.getPassword())) {
             throw new WebApplicationException("Invalid credentials", Response.Status.UNAUTHORIZED);
@@ -49,9 +46,11 @@ public class HubDeviceService {
 
         return new LoginToExam(
                 registrationInfo.getId(),
-                "name todo",
+                registrationInfo.getTestId(),
                 null,
-                null,
+                user.getCompleteName(),
+                user.getEmail(),
+                user.getPhone(),
                 "",
                 ""
         );
@@ -62,13 +61,20 @@ public class HubDeviceService {
         return questions;
     }
 
-    public Integer saveResponse(ObjectId testId, ObjectId userId, dto.Response response) {
-        Responses responses = responseDao.fetchResponsesForQuestionSet(testId, userId);
-
+    public Integer saveResponse( ResponseModel response, ObjectId testId, ObjectId userId) {
+        Responses responses = responseDao.fetchResponsesForQuestionSet(testId, userId).get();
+        // TODO: 27/5/18 Add response.
+        responses.getResponses().add(response);
         return null;
     }
 
-    public Integer saveFullResponse(List<Response> responses) {
+    public Integer saveFullResponse(List<ResponseModel> responses, ObjectId testId, ObjectId userId) {
+        Responses responsesObj = new Responses(new ObjectId(),
+                testId,
+                userId,
+                responses
+        );
+        responseDao.saveResponse(responsesObj);
         return 3;
     }
 

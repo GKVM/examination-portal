@@ -17,7 +17,7 @@ public class HubService {
 
     private UserDao userDao;
     private QuestionDao questionDao;
-    private TestDao testDao;
+    private ExaminationDao examinationDao;
     private RegistrationDao registrationDao;
     private ResponseDao responseDao;
     private static final Logger logger = LoggerFactory.getLogger(HubService.class);
@@ -25,12 +25,12 @@ public class HubService {
     public HubService(
             UserDao userDao,
             QuestionDao questionDao,
-            TestDao testDao,
+            ExaminationDao examinationDao,
             RegistrationDao registrationDao,
             ResponseDao responseDao) {
         this.userDao = userDao;
         this.questionDao = questionDao;
-        this.testDao = testDao;
+        this.examinationDao = examinationDao;
         this.registrationDao = registrationDao;
         this.responseDao = responseDao;
     }
@@ -39,7 +39,7 @@ public class HubService {
      * return question paper.
      */
     public Questions getQuestions(ObjectId testId) {
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Invalid test id."));
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Invalid test id."));
         logger.info("loading questions from database.");
         return questionDao.getQuestionSet(testId).get();
     }
@@ -56,7 +56,7 @@ public class HubService {
      * return details of all registered users.
      */
     public List<UserDetailed> getUserDetailsForTest(ObjectId testId) {
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Invalid test id."));
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Invalid test id."));
         List<Registration> registrations = registrationDao.getAllRegistrationForTest(testId);
         Set<ObjectId> userIds = registrations.stream().map(Registration::getUserId).collect(Collectors.toSet());
         List<User> registeredUsers = userDao.getSpecificUsers(userIds);

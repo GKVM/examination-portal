@@ -5,17 +5,17 @@ function showLogin() {
 
 function signIn() {
     console.log("sign in");
+    console.log($('#login-form').serialize());
     $.ajax({
-        type: "POST",
-        url: baseUrl + '/device/login',
+        type: "GET",
+        url: baseUrl + '/device/login?',
         data: $('#login-form').serialize(),
-        dataType: "json",
         success: function success(json) {
             console.log("success.");
             if (json != null) {
                 console.log(json);
                 localStorage.setItem('user', JSON.stringify(json));
-                window.location = "/authorize.html";
+                window.location = "/exam.html";
             } else {
                 $('#login-form-error').html("Something broke.");
             }

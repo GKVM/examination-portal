@@ -2,8 +2,8 @@ package service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dao.ExaminationDao;
 import dao.RegistrationDao;
-import dao.TestDao;
 import dao.UserDao;
 import dto.JwtPayload;
 import dto.Registration;
@@ -21,22 +21,28 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserService {
 
     private UserDao userDao;
-    private TestDao testDao;
+    private ExaminationDao examinationDao;
     private RegistrationDao registrationDao;
     private transient final String secret;
     private transient final static long EXPIRY_MILLIS = 60 * 60 * 1000;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserDao userDao, String secret) {
+    public UserService(UserDao userDao,
+                       ExaminationDao examinationDao,
+                       RegistrationDao registrationDao,
+                       String secret) {
         this.userDao = userDao;
+        this.examinationDao = examinationDao;
+        this.registrationDao = registrationDao;
         this.secret = secret;
     }
 
@@ -104,24 +110,38 @@ public class UserService {
     }
 
     public List<Test> listExam() {
-        List<Test> list = testDao.allTest();
-        return null;
+        List<Test> examList = examinationDao.listExams();
+        return examList;
     }
 
-    private List<Test> allTests = new ArrayList<>();
+    public List<Test> listExamForUser(User user) {
+        List<Test> examList = examinationDao.listExams();
+        List<Registration> registrationsOfUser = registrationDao.listRegistrations(user.getId());
+        Set<ObjectId> registeredIds = registrationsOfUser.stream().map(Registration::getId).collect(Collectors.toSet());
 
-    public void registerExam(ObjectId userId, ObjectId testId) {
-        User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException("User not found."));
-        Test test = testDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));
+        return examList.stream().peek(exam ->{
+            if(registeredIds.contains(exam.getId())){
+                exam.setHasApplied(true);
+            }
+        }).collect(Collectors.toList());
+    }
 
+    public void registerExam(User user, ObjectId testId) {
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));
         registrationDao.checkIfRegistrationExists(user.getId(), test.getId());
         Registration registration = new Registration(new ObjectId(),
                 test.getId(),
                 user.getId(),
-                userId.toString(),
+                getRandomNumber().toString(),
                 user.getPhone()
         );
         registrationDao.createEntry(registration);
+    }
+
+    private static Integer getRandomNumber(){
+        Integer min = 1000000;
+        Integer max = 9999999;
+        return  (int)(Math.random()*((max-min)+1))+min;
     }
 
     private static boolean authenticate(String password_plaintext, String stored_hash) {

@@ -68,16 +68,16 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
 
         //Initialize DAOs
         final UserDao userDao = new UserDao(datastore);
-        final TestDao testDao = new TestDao(datastore);
+        final ExaminationDao examinationDao = new ExaminationDao(datastore);
         final QuestionDao questionDao = new QuestionDao(datastore);
         final RegistrationDao registrationDao = new RegistrationDao(datastore);
         final ResponseDao responseDao = new ResponseDao(datastore);
 
 
-        final UserService userService = new UserService(userDao, configuration.getSecret());
-        final HubAdminService hubAdminService = new HubAdminService(userDao, testDao, questionDao, responseDao, jerseyClient, configuration.getSecret());
-        final HubDeviceService hubDeviceService = new HubDeviceService(testDao, userDao, questionDao, responseDao, registrationDao);
-        final HubService hubService = new HubService(userDao, questionDao, testDao, registrationDao, responseDao);
+        final UserService userService = new UserService(userDao, examinationDao, registrationDao, configuration.getSecret());
+        final HubAdminService hubAdminService = new HubAdminService(userDao, examinationDao, questionDao, responseDao, jerseyClient, configuration.getSecret());
+        final HubDeviceService hubDeviceService = new HubDeviceService(examinationDao, userDao, questionDao, responseDao, registrationDao);
+        final HubService hubService = new HubService(userDao, questionDao, examinationDao, registrationDao, responseDao);
 
         final CandidateResource candidateResource = new CandidateResource(userService);
         final HubAdminResource hubAdminResource = new HubAdminResource(hubAdminService);

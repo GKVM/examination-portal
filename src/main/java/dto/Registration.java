@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dropwizard.jackson.JsonSnakeCase;
 import json.ObjectIdDeserializer;
 import json.ObjectIdSerializer;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 
+@JsonSnakeCase
+@Entity(value = "registration", noClassnameStored = true)
 public class Registration {
 
     @Id

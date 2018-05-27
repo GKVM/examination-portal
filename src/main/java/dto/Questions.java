@@ -8,20 +8,27 @@ import io.dropwizard.jackson.JsonSnakeCase;
 import json.ObjectIdDeserializer;
 import json.ObjectIdSerializer;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
 
 @JsonSnakeCase
-@Entity(value = "test", noClassnameStored = true)
+@Entity(value = "question", noClassnameStored = true)
 public class Questions {
     @Id
     @JsonSerialize(using = ObjectIdSerializer.class)
     @JsonDeserialize(using = ObjectIdDeserializer.class)
     private ObjectId id;
+    @JsonSerialize(using = ObjectIdSerializer.class)
+    @JsonDeserialize(using = ObjectIdDeserializer.class)
     private ObjectId testId;
+    @Embedded
     private List<Question> questionList;
+
+    public Questions() {
+    }
 
     @JsonCreator
     public Questions(

@@ -18,11 +18,18 @@ public class RegistrationDao extends BasicDAO<Registration, ObjectId> {
         return Boolean.TRUE;
     }
 
+    public List<Registration> listRegistrations(ObjectId userId){
+        List<Registration> registrations = this.createQuery()
+                .field("user_id").equal(userId)
+                .asList();
+        return registrations;
+    }
+
     public Optional<Registration> getRegistration(String registration){
         Registration registrationInfo = this.createQuery()
+                .field("registration").equal(registration)
                 .get();
-        // TODO: 26/5/18
-        return null;
+        return Optional.ofNullable(registrationInfo);
     }
 
     public List<Registration> getAllRegistrationForTest(ObjectId testId) {

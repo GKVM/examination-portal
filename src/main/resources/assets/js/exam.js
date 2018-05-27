@@ -1,83 +1,84 @@
-let user = {
-    'name': "Demo user1",
-    'exam_name': "Example examination",
-    'question_id': "Example examination",
-};
+let info;
 let test = {
     'id': "",
     'name': "Mock test name"
 };
-let questions = [
-    {
-        'number': 1,
-        'question': "ushdfsn1 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "sdfs oidfos",
-        'optionb': "sdfert oidfos",
-        'optionc': "kfpokd oidfos",
-        'optiond': "pdfpgo oidfos"
-    },
-    {
-        'number': 2,
-        'question': "eijoirjg2 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    },
-    {
-        'number': 3,
-        'question': "wpkwe 3csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    },
-    {
-        'number': 4,
-        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    },
-    {
-        'number': 5,
-        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    },
-    {
-        'number': 6,
-        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    },
-    {
-        'number': 7,
-        'question': "woijwoie4 csudhfsiud fsidufhs dfisudfhs dfisuhdf aoisdj aoia saoiseasidjaos oaisjdoa",
-        'optiona': "poepgok oidfos",
-        'optionb': "psokpdfo oidfos",
-        'optionc': "dpjpgofkp oidfos",
-        'optiond': "eopogkpo oidfos"
-    }
-];
-let responses = [];
+let questions;
+let numberOfQuestions;
 let currentQuestionNumber = 1;
-const numberOfQuestions = questions.length;
+let responses = [];
 
 window.onload = function () {
     /*initializeVideoRendering();*/
+    fetchInitialData();
     showCandidateInfo();
-    getQuestionsAndShowQuestions();
-    renderFromNumber(1);
 };
 
 function fetchInitialData() {
+    let serializedData = localStorage.getItem('user');
+    info = JSON.parse(serializedData);
+    console.log("User ");
+    console.log(info);
+    getQuestions()
+    //getMockTestInfo();
+}
 
+function getMockTestInfo() {
+    //this is mock
+    //move to login.js
+    $.ajax({
+        type: "POST",
+        data: {
+            'registration': "",
+            'password': ""
+        },
+        url: baseUrl + '/device/login',
+        dataType: "json",
+        success: function success(json) {
+            if (json != null) {
+                info = json;
+                console.log(json);
+                localStorage.setItem('user', JSON.stringify(json));
+                getQuestions();
+            } else {
+                console.log('')
+            }
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            //alert("Error" + xhr.responseText);
+            console.log('Error in singin ' + xhr.responseText);
+        }
+    });
+}
+
+function getQuestions() {
+    //this is mock
+    //move to login.js
+    $.ajax({
+        type: "GET",
+        data: {
+            'test': info.testId
+        },
+        url: baseUrl + '/device/questions',
+        success: function success(json) {
+            if (json != null) {
+                localStorage.setItem('questions', JSON.stringify(questions));
+                questions = json.questionList;
+                renderFromNumber(1)
+            }
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            //alert("Error" + xhr.responseText);
+            console.log('Error in getting questions in ' + xhr.responseText);
+        }
+    });
+}
+
+function showCandidateInfo() {
+    /*    let serializedData = localStorage.getItem('user');
+        user = JSON.parse(serializedData);
+        console.log("User " + user);*/
+    $('#username').text(info.name);
 }
 
 function initializeVideoRendering() {
@@ -106,13 +107,6 @@ function initializeVideoRendering() {
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
 
-function showCandidateInfo() {
-    /*    let serializedData = localStorage.getItem('user');
-        user = JSON.parse(serializedData);
-        console.log("User " + user);
-        $('#username').text(user.name);*/
-}
-
 function getQuestionsAndShowQuestions() {
     // let questionsSerialized = localStorage.getItem('questions');
     //let questionsResponse = JSON.parse(questionsSerailized);
@@ -129,9 +123,10 @@ function renderFromNumber(number) {
     $('#previous-question-btn').prop("onclick", null);
     $('#clear-response-btn').prop("onclick", null);
     $('#submit-next-question-btn').prop("onclick", null);
-    $('#previous-question-btn').click( null);
-    $('#clear-response-btn').click( null);
-    $('#submit-next-question-btn').click( function () {});
+    $('#previous-question-btn').click(null);
+    $('#clear-response-btn').click(null);
+    $('#submit-next-question-btn').click(function () {
+    });
 
     $('#number').text(number);
 
@@ -156,7 +151,7 @@ function submitResponseFinal() {
     console.log("Submitting response");
     $.ajax({
         type: "POST",
-        url: baseUrl + '/hub/submit-all',
+        url: baseUrl + '/device/submit-reply',
         data: {
             "test": test.id,
             "user": user.id,
@@ -177,9 +172,15 @@ function submitResponseFinal() {
 function submitOneResponse() {
     console.log("submit response");
     //@todo Save response in local storage.
+    let responseOptional = responses.search(r => r.number === currentQuestionNumber);
+    if (responseOptional == null) {
+        //create new object
+    } else {
+        //update
+    }
     /*$.ajax({
         type: "POST",
-        url: baseUrl + '/hub/upload',
+        url: baseUrl + '/device/upload',
         data: {
             "test": test.id,
             "user": user.id

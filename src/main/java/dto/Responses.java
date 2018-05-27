@@ -18,14 +18,14 @@ public class Responses {
     private ObjectId id;
     private ObjectId userId;
     private ObjectId testId;
-    private List<Response> responses;
+    private List<ResponseModel> responses;
 
     @JsonCreator
     public Responses(
             @JsonProperty("id") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId id,
             @JsonProperty("userId") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId userId,
             @JsonProperty("testId") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId testId,
-            @JsonProperty("registration") List<Response> responses
+            @JsonProperty("registration") List<ResponseModel> responses
     ) {
         this.id = id;
         this.userId = userId;
@@ -45,7 +45,7 @@ public class Responses {
         return testId;
     }
 
-    public List<Response> getResponses() {
+    public List<ResponseModel> getResponses() {
         return responses;
     }
 }

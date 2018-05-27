@@ -1,7 +1,9 @@
 package resource;
 
 import dto.Test;
+import dto.User;
 import dto.response.SignInResponse;
+import io.dropwizard.auth.Auth;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Range;
@@ -46,17 +48,18 @@ public class CandidateResource {
     }
 
     @GET
-    @PermitAll
     @Path("list")
-    public List<Test> examList() {
-        return userService.listExam();
+    public List<Test> examList(
+            @Auth User user) {
+        return userService.listExamForUser(user);
     }
 
     @POST
     @PermitAll
     @Path("enroll-exam")
-    public void enroll(@NotNull @FormParam("user_id") ObjectId userId,
-                       @NotNull @FormParam("test_id") ObjectId testId) {
-        userService.registerExam(userId, testId);
+    public void enroll(
+            @Auth User user,
+            @NotNull @FormParam("test_id") ObjectId testId) {
+        userService.registerExam(user, testId);
     }
 }

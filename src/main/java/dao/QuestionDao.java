@@ -14,7 +14,7 @@ public class QuestionDao extends BasicDAO<Questions, ObjectId> {
 
     public Optional<Questions> getQuestionSet(ObjectId testId) {
         final Questions questions = this.createQuery()
-                .field("_id").equal(testId)
+                .field("testId").equal(testId)
                 .get();
         return Optional.ofNullable(questions);
     }

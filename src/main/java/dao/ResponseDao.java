@@ -19,12 +19,12 @@ public class ResponseDao extends BasicDAO<Responses, ObjectId> {
         return Optional.of(responses.getId());
     }
 
-    public Responses fetchResponsesForQuestionSet(ObjectId testId, ObjectId candidateId) {
+    public Optional<Responses> fetchResponsesForQuestionSet(ObjectId testId, ObjectId candidateId) {
         Responses responses = this.createQuery()
                 .field("testId").equal(testId)
                 .field("userId").equal(candidateId)
                 .get();
-        return responses;
+        return Optional.of(responses);
     }
 
     public Responses updateResponse(ObjectId candidateId, ObjectId testId) {

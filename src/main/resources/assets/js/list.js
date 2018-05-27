@@ -24,7 +24,7 @@ let tests = [
 ];
 
 function showMockTest() {
-    window.location = "/exam.html";
+    window.location = "/login.html?mock-test=true";
 }
 
 function showAuthorize() {
@@ -38,12 +38,31 @@ function showCandidateInfo() {
     $('#user-email-value').text(user.email);
 }
 
-function showExam(exam) {
+function loadExamList() {
+    $.ajax({
+        type: "GET",
+        url: `${baseUrl}/candidate/list`,
+        success: function (response) {
+            console.log("success.");
+            console.log(response);
+            test = response;
 
+            tests.forEach(function (test) {
+                showExam(test)
+            })
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            $('#list-errors').html(xhr.responseText);
+            console.log(`Error in sign up ${xhr.responseText}`);
+        }
+    });
+}
+
+function showExam(exam) {
     let statusString = "";
     switch (exam.is_applied) {
         case "false":
-            statusString = '<a href="javascript:;" class="btn secondary-content">Apply</a>';
+            statusString = '<a href="javascript:;" onclick="" class="btn secondary-content">Apply</a>';
             break;
         case "true":
             statusString = '<a href="javascript:;" class="btn secondary-content">Already Applied</a>';
@@ -57,33 +76,6 @@ function showExam(exam) {
                             </p>` + statusString+`</li>`)
 }
 
-function loadExamList() {
-    $.ajax({
-        type: "GET",
-        url: `${baseUrl}/candidate/list`,
-        success: function (response) {
-            console.log("success.");
-            console.log(response);
-            let list = response;
-            let pos = 0;
-            /*while (pos < 4) {
-                pos = pos + 1;
-                $('#list-container').append(`
-                    <tr>
-                        <td>${pos}</td>
-                        <td>exam ${pos}</td>
-                        <td></td>
-                    </tr>
-                `)
-            }*/
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            $('#list-errors').html(xhr.responseText);
-            console.log(`Error in sign up ${xhr.responseText}`);
-        }
-    });
-
-    tests.forEach(function (test) {
-        showExam(test)
-    })
+function registerForExam(examId){
+    console.log("")
 }
