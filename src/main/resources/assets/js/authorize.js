@@ -1,30 +1,19 @@
 window.onload = function () {
+    loadInfo();
     initializeVideoRendering();
 };
 
-function callAPI(){
-    console.log("Loggin in");
-    $.ajax({
-        type: "POST",
-        url: baseUrl + '/hub/signin',
-        data: $('#login-form').serialize(),
-        dataType: "json",
-        success: function success(json) {
-            console.log("success.");
-            if (json != null) {
-                console.log(json);
-                localStorage.setItem('user', JSON.stringify(json));
-                window.location = "/exam.html";
-            } else {
-                $('#login-form-error').html("Something broke.");
-            }
-        },
-        error: function error(xhr, ajaxOptions, thrownError) {
-            $('#login-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log('Error in sign in ' + xhr.responseText);
-        }
-    });
+let infoData;
+
+function loadInfo(){
+    let serializedData = localStorage.getItem('user');
+    infoData = JSON.parse(serializedData);
+    console.log("User ");
+    console.log(infoData);
+    showCandidateInfo();
 }
+
+
 
 function initializeVideoRendering() {
     let video = document.getElementById('video');
