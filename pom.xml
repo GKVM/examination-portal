@@ -88,7 +88,13 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
-         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-mulipart</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -122,7 +128,6 @@
             <artifactId>json</artifactId>
             <version>20170516</version>
         </dependency>
-
     </dependencies>
 
     <build>
