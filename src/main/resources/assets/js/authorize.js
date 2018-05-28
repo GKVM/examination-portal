@@ -5,15 +5,42 @@ window.onload = function () {
 
 let infoData;
 
-function loadInfo(){
+function loadInfo() {
     let serializedData = localStorage.getItem('user');
     infoData = JSON.parse(serializedData);
     console.log("User ");
     console.log(infoData);
-    showCandidateInfo();
 }
 
+document.getElementById("save-button").addEventListener("click", function () {
+    uploadPhoto()
+});
 
+function photoCheck() {
+    image = canvas.toDataURL("image/jpg");
+    console.log(image);
+    let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
+    let blob = base64ToBlob(base64ImageContent, 'image/jpg');
+    let formData = new FormData();
+    formData.append('photo', blob, "i.jpg");
+    $.ajax({
+        type: "POST",
+        url: baseUrl + '/device/verify',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        headers: {
+        },
+        success: function success(json) {
+            console.log("success.");
+            window.location = "/exam.html";
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            console.log('Error upload ' + xhr.responseText);
+        }
+    });
+}
 
 function initializeVideoRendering() {
     let video = document.getElementById('video');
@@ -24,45 +51,9 @@ function initializeVideoRendering() {
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
     tracking.track(video, tracker, {camera: true});
-    // isFaceDetected = false;
-    // needsReAuthorization = false;
-    // let faceOutTimer;
-    // globalTimer = 0;
-    // timer = 0;
 
     tracker.on('track', function (event) {
         console.log('\n track ', event.data);
-
-        /*
-            if (!isFaceDetected) {
-                if (event.data.length) {
-                    isFaceDetected = true;
-                }
-            // no face detected
-            } else if (!event.data.length) {
-                if (globalTimer === 60000) {
-                    // terminate
-                }
-
-                if(!needsReAuthorization) {
-                    faceOutTimer = setInterval(
-                        function() {
-                            timer += 100;
-                            globalTimer += 100;
-                            if (timer === 10000) {
-                                timer = 0;
-                                needsReAuthorization = true;
-                                clearInterval(faceOutTimer);
-                            }
-                        },
-                        100
-                    );
-                }
-            } else if (needsReAuthorization) {
-                // call authorization api
-                needsReAuthorization = false;
-            }
-         */
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
@@ -91,7 +82,7 @@ function saveFullFrame() {
     /*document.getElementById("theimage").src = canvas.toDataURL();*/
 }
 
-function takeSnap(){
+function takeSnap() {
     console.log("taking snap");
     let snap = captureCanvas();
     console.log(snap);
@@ -99,11 +90,11 @@ function takeSnap(){
     bannerImg.src = snap
 }
 
-function captureCanvas(){
+function captureCanvas() {
     let canvas = document.getElementById('canvas');
     if (canvas.getContext) {
         let ctx = canvas.getContext("2d");
-        return  canvas.toDataURL("image/png");
+        return canvas.toDataURL("image/png");
     }
 }
 

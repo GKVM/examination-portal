@@ -3,6 +3,7 @@ package service;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -80,32 +81,56 @@ public class FaceRecognitionService {
     }
 
     Boolean verifyImage(File photo, List<Double> model) {
-        MultiPart multiPart = null;
-        multiPart = new MultiPart();
+        try {
+            MultiPart multiPart = null;
+            multiPart = new MultiPart();
+            HashMap<String, String> data = new HashMap<>();
+            data.put("model", model.toString());
 
-        HashMap<String, List<Double>> data = new HashMap<>();
-        data.put("model", model);
+            FileDataBodyPart imgBodyPart = new FileDataBodyPart("photo", photo,
+                    MediaType.APPLICATION_OCTET_STREAM_TYPE);
 
-        FileDataBodyPart imgBodyPart = new FileDataBodyPart("photo", photo,
-                MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        multiPart.bodyPart(imgBodyPart);
-        multiPart.setEntity(data);
+            FormDataBodyPart form = new FormDataBodyPart("model", model.toString());
 
-        WebTarget server = client.target(API_SERVER + "/verify");
-        Response apiResponse = client.target(API_SERVER + "/verify")
-                .request(MediaType.MULTIPART_FORM_DATA)
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.html(multiPart));
+            multiPart.bodyPart(imgBodyPart);
+            multiPart.bodyPart(new FormDataBodyPart("model", model.toString()));
 
-        if (apiResponse.getStatus() != Response.Status.OK.getStatusCode()) {
-            apiResponse.getEntity();
-            throw new WebApplicationException("Unable to connect to server.");
-        } else {
-            System.out.println("Questions downloaded");
+            Response apiResponse = client.target(API_SERVER + "/verify")
+                    .request(MediaType.MULTIPART_FORM_DATA)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(multiPart, "multipart/form-data"));
+
+            if (apiResponse.getStatus() != Response.Status.OK.getStatusCode()) {
+                apiResponse.getEntity();
+
+                throw new WebApplicationException("Unable to connect to server.");
+            } else {
+                System.out.println("Obtained response");
+                String responseMessage = apiResponse.readEntity(String.class);
+                Gson g = new Gson();
+                MatchingRequest t = g.fromJson(responseMessage, MatchingRequest.class);
+                Boolean result = t.getVerified();
+
+                System.out.println(responseMessage);
+                System.out.println(result);
+
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception has occured " + e.getMessage());
+        } finally {
+//            if (null != multiPart) {
+//                try {
+//                    multiPart.close();
+//                } catch (IOException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//            }
         }
         return null;
     }
-
 }
 
 class TrainedResultResponse {

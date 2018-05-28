@@ -74,7 +74,7 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
         final FaceRecognitionService faceRecognitionService= new FaceRecognitionService(jerseyClient);
         final UserService userService = new UserService(userDao, examinationDao, registrationDao, faceRecognitionService, configuration.getSecret());
         final HubAdminService hubAdminService = new HubAdminService(userDao, examinationDao, questionDao, responseDao, jerseyClient, configuration.getSecret());
-        final HubDeviceService hubDeviceService = new HubDeviceService(examinationDao, userDao, questionDao, responseDao, registrationDao);
+        final HubDeviceService hubDeviceService = new HubDeviceService(examinationDao, userDao, questionDao, responseDao, registrationDao, faceRecognitionService);
         final HubService hubService = new HubService(userDao, questionDao, examinationDao, registrationDao, responseDao);
 
         final CandidateResource candidateResource = new CandidateResource(userService);

@@ -2,14 +2,19 @@ package service;
 
 import dao.*;
 import dto.*;
+import dto.response.Authenticated;
 import dto.response.LoginToExam;
+import org.apache.commons.io.FileUtils;
 import org.bson.types.ObjectId;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class HubDeviceService {
@@ -82,11 +87,25 @@ public class HubDeviceService {
         return 3;
     }
 
-    public Boolean authenticate(ObjectId userId, File file) {
-        System.out.println("Writing");
-        User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException(""));
-        Boolean result = faceRecognitionService.verifyImage(file, user.getModel());
-        return result;
+    public Authenticated authenticate(ObjectId userId, InputStream fileInputStream,
+                                      FormDataContentDisposition fileDetail) {
+        // save it
+        try {
+
+            String uploadedFileLocation = "images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
+            System.out.println(fileDetail.getFileName());
+
+            File file = new File(uploadedFileLocation);
+            FileUtils.copyInputStreamToFile(fileInputStream, file);
+
+            System.out.println("Writing");
+            User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException(""));
+            Boolean result = faceRecognitionService.verifyImage(file, user.getModel());
+            return new Authenticated(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new WebApplicationException("Error in handling file.");
+        }
     }
 
 }
