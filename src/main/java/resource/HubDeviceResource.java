@@ -56,7 +56,7 @@ public class HubDeviceResource {
     @Path("verify")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Authenticated getPhoto(
-            @QueryParam("user_id") ObjectId userId,
+            @FormDataParam("user_id") ObjectId userId,
             @FormDataParam("photo") final InputStream fileInputStream,
             @FormDataParam("photo") final FormDataContentDisposition fileDetail
     ) {

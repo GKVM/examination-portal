@@ -17,12 +17,14 @@ document.getElementById("save-button").addEventListener("click", function () {
 });
 
 function photoCheck() {
+    console.log("Checking image");
     image = canvas.toDataURL("image/jpg");
-    console.log(image);
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
     let formData = new FormData();
-    formData.append('photo', blob, "i.jpg");
+    formData.append('photo', blob, "c.jpg");
+    formData.append('user_id', infoData.userId);
+    console.log(infoData.userId)
     $.ajax({
         type: "POST",
         url: baseUrl + '/device/verify',
@@ -30,8 +32,6 @@ function photoCheck() {
         contentType: false,
         processData: false,
         data: formData,
-        headers: {
-        },
         success: function success(json) {
             console.log("success.");
             window.location = "/exam.html";
@@ -53,12 +53,11 @@ function initializeVideoRendering() {
     tracking.track(video, tracker, {camera: true});
 
     tracker.on('track', function (event) {
-        console.log('\n track ', event.data);
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
-            console.log('\n rect ', rect);
-
+            photoCheck();
+            //console.log('\n rect ', rect)
             context.strokeStyle = '#a64ceb';
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
@@ -71,6 +70,24 @@ function initializeVideoRendering() {
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
     gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
+}
+
+function base64ToBlob(base64, mime) {
+    mime = mime || '';
+    var sliceSize = 1024;
+    var byteChars = window.atob(base64);
+    var byteArrays = [];
+    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+        var slice = byteChars.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, {type: mime});
 }
 
 function saveFullFrame() {

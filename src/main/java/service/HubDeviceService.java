@@ -54,7 +54,7 @@ public class HubDeviceService {
         final User user = userDao.getUser(registrationInfo.getUserId()).orElseThrow(() -> new WebApplicationException("User not found."));
 
         return new LoginToExam(
-                registrationInfo.getId(),
+                registrationInfo.getUserId(),
                 registrationInfo.getTestId(),
                 null,
                 user.getCompleteName(),
@@ -91,7 +91,7 @@ public class HubDeviceService {
                                       FormDataContentDisposition fileDetail) {
         // save it
         try {
-
+            System.out.println("User id: " + userId);
             String uploadedFileLocation = "images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
             System.out.println(fileDetail.getFileName());
 
