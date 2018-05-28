@@ -18,6 +18,7 @@ function showMockTest() {
 function showCandidateInfo() {
     let serializedData = localStorage.getItem('user');
     loginInfo = JSON.parse(serializedData);
+    $('#user-photo-div').append(`<img src="`+ loginInfo.picture +`">`)
     $('#username').text(loginInfo.name);
     $('#user-email-value').text(loginInfo.email);
 }
@@ -57,7 +58,7 @@ function showExam(exam) {
     }
 
     $('#list-collection').append(`<li class="collection-item avatar">
-                            <img src="" alt="" class="circle">
+                            <img src='` + exam.photo + `' alt="" class="circle">
                             <span class="title">` + exam.name + `</span>
                             <p>` + (exam.organization ? exam.organization : "organization name") + ` <br>
                             </p>` + statusString + `</li>`)

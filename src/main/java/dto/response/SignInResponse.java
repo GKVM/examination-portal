@@ -18,6 +18,7 @@ public class SignInResponse {
     private String name;
     private String email;
     private String phone;
+    private String picture;
     private String token;
     private Long expiresAt;
 
@@ -27,6 +28,7 @@ public class SignInResponse {
             @JsonProperty("name") String name,
             @JsonProperty("email") String email,
             @JsonProperty("phone") String phone,
+            @JsonProperty("phone") String picture,
             @JsonProperty("token") String token,
             @JsonProperty("expires_at") Long expiresAt
     ) {
@@ -34,6 +36,7 @@ public class SignInResponse {
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.picture = picture;
         this.token = token;
         this.expiresAt = expiresAt;
     }
@@ -60,5 +63,9 @@ public class SignInResponse {
 
     public Long getExpiresAt() {
         return expiresAt;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 }

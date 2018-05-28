@@ -91,6 +91,7 @@ public class UserService {
                     user.getCompleteName(),
                     user.getEmail(),
                     user.getPhone(),
+                    user.getPicture(),
                     jwtToken,
                     expiryTime.getTime()
             );
@@ -115,6 +116,7 @@ public class UserService {
                 user.getCompleteName(),
                 user.getEmail(),
                 user.getPhone(),
+                user.getPicture(),
                 jwtToken,
                 expiryTime.getTime()
         );

@@ -65,11 +65,7 @@ public class CandidateResource {
             @FormDataParam("photo") final InputStream fileInputStream,
             @FormDataParam("photo") final FormDataContentDisposition fileDetail
     ) {
-        Response.Status respStatus = Response.Status.OK;
-        if (fileDetail == null) {
-            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-        }
-        String uploadedFileLocation = "images/" + fileDetail.getFileName();
+        String uploadedFileLocation = "src/resorces/assets/images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
         System.out.println(fileDetail.getFileName());
         // save it
         try {
