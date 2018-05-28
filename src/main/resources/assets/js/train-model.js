@@ -14,21 +14,18 @@ var canvas = document.getElementById('canvas');
 document.getElementById("submit").addEventListener("click", function () {
     uploadPhoto()
 });
+
 let image;
-
 function uploadPhoto() {
-    let dataURL = canvas.toDataURL("image/png");
-    console.log("h"+dataURL);
-
-    image = canvas.toDataURL();
+    image = canvas.toDataURL("image/jpg");
     console.log(image);
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
 
     const blobUrl = URL.createObjectURL(blob);
     const img = document.createElement('img');
-    img.src = blobUrl;
-    document.body.appendChild(img);
+    // img.src = blobUrl;
+    // document.body.appendChild(img);
 
     let formData = new FormData();
     formData.append('photo', blob, "i.jpg");
@@ -110,6 +107,9 @@ function initializeVideoRendering() {
             context.fillStyle = "#fff";
             context.fillText(`x: ${rect.x}px`, rect.x + rect.width + 5, rect.y + 11);
             context.fillText(`y: ${rect.y}px`, rect.x + rect.width + 5, rect.y + 22);
+
+            context.drawImage(video, rect.x, rect.y, rect.width, rect.height, 0 , 0, canvas.width, canvas.height);
+
         });
     });
     let gui = new dat.GUI();

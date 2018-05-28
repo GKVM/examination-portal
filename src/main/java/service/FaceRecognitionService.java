@@ -33,7 +33,6 @@ public class FaceRecognitionService {
     }
 
     List<Double> trainImage(File photo) {
-
         try {
             MultiPart multiPart = null;
             multiPart = new MultiPart();
@@ -80,14 +79,23 @@ public class FaceRecognitionService {
         return null;
     }
 
-    private Boolean verifyImage(File photo, List<Double> model) {
-        HashMap<String, File> data = new HashMap<>();
-        data.put("test_id", photo);
+    Boolean verifyImage(File photo, List<Double> model) {
+        MultiPart multiPart = null;
+        multiPart = new MultiPart();
 
+        HashMap<String, List<Double>> data = new HashMap<>();
+        data.put("model", model);
+
+        FileDataBodyPart imgBodyPart = new FileDataBodyPart("photo", photo,
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        multiPart.bodyPart(imgBodyPart);
+        multiPart.setEntity(data);
+
+        WebTarget server = client.target(API_SERVER + "/verify");
         Response apiResponse = client.target(API_SERVER + "/verify")
                 .request(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.html(data));
+                .post(Entity.html(multiPart));
 
         if (apiResponse.getStatus() != Response.Status.OK.getStatusCode()) {
             apiResponse.getEntity();

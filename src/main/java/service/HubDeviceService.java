@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.util.List;
 
 public class HubDeviceService {
@@ -20,19 +21,22 @@ public class HubDeviceService {
     private final QuestionDao questionDao;
     private final ResponseDao responseDao;
     private final RegistrationDao registrationDao;
+    private final FaceRecognitionService faceRecognitionService;
 
     public HubDeviceService(
             ExaminationDao examinationDao,
             UserDao userDao,
             QuestionDao questionDao,
             ResponseDao responseDao,
-            RegistrationDao registrationDao
+            RegistrationDao registrationDao,
+            FaceRecognitionService faceRecognitionService
     ) {
         this.examinationDao = examinationDao;
         this.userDao = userDao;
         this.questionDao = questionDao;
         this.responseDao = responseDao;
         this.registrationDao = registrationDao;
+        this.faceRecognitionService = faceRecognitionService;
     }
 
     public LoginToExam login(String registration, String password) {
@@ -61,7 +65,7 @@ public class HubDeviceService {
         return questions;
     }
 
-    public Integer saveResponse( ResponseModel response, ObjectId testId, ObjectId userId) {
+    public Integer saveResponse(ResponseModel response, ObjectId testId, ObjectId userId) {
         Responses responses = responseDao.fetchResponsesForQuestionSet(testId, userId).get();
         // TODO: 27/5/18 Add response.
         responses.getResponses().add(response);
@@ -76,6 +80,13 @@ public class HubDeviceService {
         );
         responseDao.saveResponse(responsesObj);
         return 3;
+    }
+
+    public Boolean authenticate(ObjectId userId, File file) {
+        System.out.println("Writing");
+        User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException(""));
+        Boolean result = faceRecognitionService.verifyImage(file, user.getModel());
+        return result;
     }
 
 }
