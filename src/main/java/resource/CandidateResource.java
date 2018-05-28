@@ -65,7 +65,7 @@ public class CandidateResource {
             @FormDataParam("photo") final InputStream fileInputStream,
             @FormDataParam("photo") final FormDataContentDisposition fileDetail
     ) {
-        String uploadedFileLocation = "src/resorces/assets/images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
+        String uploadedFileLocation = "images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
         System.out.println(fileDetail.getFileName());
         // save it
         try {

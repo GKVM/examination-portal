@@ -1,26 +1,10 @@
+let loginInfo;
+
 window.onload = function () {
     initializeVideoRendering();
-    var options = {
-        beforeSubmit: showRequest, // pre-submit callback
-        success: showResponse // post-submit callback
-    };
-    // bind to the form's submit event
-    $('#frmUploader').submit(function () {
-        $(this).ajaxSubmit(options); // always return false to prevent standard browser submit and page navigation
-        return false;
-    });
+    let serializedData = localStorage.getItem('user');
+    loginInfo = JSON.parse(serializedData);
 };
-
-// pre-submit callback
-function showRequest(formData, jqForm, options) {
-    alert('Uploading is starting.');
-    return true;
-}
-
-// post-submit callback
-function showResponse(responseText, statusText, xhr, $form) {
-    alert('status: ' + statusText + '\n\nresponseText: \n' + responseText);
-}
 
 var video = document.getElementById('video');
 
@@ -34,23 +18,25 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 }
 
 var canvas = document.getElementById('canvas');
-var video = document.getElementById('video');
 
 // Trigger photo take
 document.getElementById("submit").addEventListener("click", function() {
+    uploadPhoto()
+});
+
+function uploadPhoto(){
     var image = new Image();
     image.src = canvas.toDataURL("image/png");
     console.log("save");
     console.log(image.src);
-    return image;
-});
 
-function uploadImage() {
     $.ajax({
         type: "POST",
-        url: baseUrl + '/candidate/signin',
-        data: $('#login-form').serialize(),
-        dataType: " multipart/form-data",
+        url: baseUrl + '/candidate/upload-photo',
+        data: {
+            "Authorization": `Bearer ` + loginInfo.token
+        },
+        dataType: "multipart/form-data",
         success: function success(json) {
             console.log("success.");
             if (json != null) {
@@ -63,9 +49,10 @@ function uploadImage() {
         },
         error: function error(xhr, ajaxOptions, thrownError) {
             $('#login-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log('Error in sign in ' + xhr.responseText);
+            console.log('Error in sending photo ' + xhr.responseText);
         }
     });
+    return image;
 }
 
 function initializeVideoRendering() {
@@ -77,49 +64,9 @@ function initializeVideoRendering() {
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
     tracking.track(video, tracker, {camera: true});
-    // isFaceDetected = false;
-    // needsReAuthorization = false;
-    // let faceOutTimer;
-    // globalTimer = 0;
-    // timer = 0;
-
     tracker.on('track', function (event) {
-        //console.log('\n track ', event.data);
-        /*
-
-            if (!isFaceDetected) {
-                if (event.data.length) {
-                    isFaceDetected = true;
-                }
-            // no face detected
-            } else if (!event.data.length) {
-                if (globalTimer === 60000) {
-                    // terminate
-                }
-
-                if(!needsReAuthorization) {
-                    faceOutTimer = setInterval(
-                        function() {
-                            timer += 100;
-                            globalTimer += 100;
-                            if (timer === 10000) {
-                                timer = 0;
-                                needsReAuthorization = true;
-                                clearInterval(faceOutTimer);
-                            }
-                        },
-                        100
-                    );
-                }
-            } else if (needsReAuthorization) {
-                // call authorization api
-                needsReAuthorization = false;
-            }
-         */
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
-            //console.log('\n rect ', rect);
-
             context.strokeStyle = '#a64ceb';
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
@@ -141,22 +88,6 @@ function saveFullFrame() {
     let imgData = canvas.toDataURL();
     localStorage.setItem("imgData", imgData);
     /*document.getElementById("theimage").src = canvas.toDataURL();*/
-}
-
-function takeSnap() {
-    console.log("taking snap");
-    let snap = captureCanvas();
-    console.log(snap);
-    let bannerImg = document.getElementById('11-img');
-    bannerImg.src = snap
-}
-
-function captureCanvas() {
-    let canvas = document.getElementById('canvas');
-    if (canvas.getContext) {
-        let ctx = canvas.getContext("2d");
-        return canvas.toDataURL("image/png");
-    }
 }
 
 function getBase64Image(img) {
