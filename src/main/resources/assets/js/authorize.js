@@ -33,11 +33,21 @@ function photoCheck() {
         processData: false,
         data: formData,
         success: function success(json) {
+            console.log(json.verified)
             console.log("success.");
-            window.location = "/exam.html";
+            if(json.verified){
+                console.log("Verified")
+                window.location = "/exam.html";
+            }
+            wait(1000)
+            setTimeout(rotator,5000);
+
         },
         error: function error(xhr, ajaxOptions, thrownError) {
             console.log('Error upload ' + xhr.responseText);
+            wait(1000)
+            setTimeout(rotator,5000);
+
         }
     });
 }
