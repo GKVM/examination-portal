@@ -18,10 +18,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import resource.*;
-import service.HubAdminService;
-import service.HubDeviceService;
-import service.HubService;
-import service.UserService;
+import service.*;
 
 import javax.ws.rs.client.Client;
 import java.util.Map;
@@ -74,7 +71,8 @@ public class Application extends io.dropwizard.Application<ExamConfiguration> {
         final ResponseDao responseDao = new ResponseDao(datastore);
 
 
-        final UserService userService = new UserService(userDao, examinationDao, registrationDao, configuration.getSecret());
+        final FaceRecognitionService faceRecognitionService= new FaceRecognitionService(jerseyClient);
+        final UserService userService = new UserService(userDao, examinationDao, registrationDao, faceRecognitionService, configuration.getSecret());
         final HubAdminService hubAdminService = new HubAdminService(userDao, examinationDao, questionDao, responseDao, jerseyClient, configuration.getSecret());
         final HubDeviceService hubDeviceService = new HubDeviceService(examinationDao, userDao, questionDao, responseDao, registrationDao);
         final HubService hubService = new HubService(userDao, questionDao, examinationDao, registrationDao, responseDao);

@@ -22,6 +22,28 @@ function showResponse(responseText, statusText, xhr, $form) {
     alert('status: ' + statusText + '\n\nresponseText: \n' + responseText);
 }
 
+var video = document.getElementById('video');
+
+// Get access to the camera!
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Not adding `{ audio: true }` since we only want video now
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
+    });
+}
+
+var canvas = document.getElementById('canvas');
+var video = document.getElementById('video');
+
+// Trigger photo take
+document.getElementById("submit").addEventListener("click", function() {
+    var image = new Image();
+    image.src = canvas.toDataURL("image/png");
+    console.log("save");
+    console.log(image.src);
+    return image;
+});
 
 function uploadImage() {
     $.ajax({
@@ -62,8 +84,7 @@ function initializeVideoRendering() {
     // timer = 0;
 
     tracker.on('track', function (event) {
-        console.log('\n track ', event.data);
-
+        //console.log('\n track ', event.data);
         /*
 
             if (!isFaceDetected) {
@@ -95,10 +116,9 @@ function initializeVideoRendering() {
                 needsReAuthorization = false;
             }
          */
-
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
-            console.log('\n rect ', rect);
+            //console.log('\n rect ', rect);
 
             context.strokeStyle = '#a64ceb';
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);

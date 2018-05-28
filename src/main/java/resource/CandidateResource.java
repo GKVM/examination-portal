@@ -4,7 +4,10 @@ import dto.Test;
 import dto.User;
 import dto.response.SignInResponse;
 import io.dropwizard.auth.Auth;
+import org.apache.commons.io.FileUtils;
 import org.bson.types.ObjectId;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Range;
 import service.UserService;
@@ -13,7 +16,13 @@ import javax.annotation.security.PermitAll;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.*;
 import java.util.List;
+
+//import com.sun.jersey.core.header.FormDataContentDisposition;
+//import com.sun.jersey.core.header.FormDataContentDisposition;
+//
 
 @Path("candidate")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,6 +54,47 @@ public class CandidateResource {
             @NotNull @FormParam("password") String password
     ) {
         return userService.signin(phone, password);
+    }
+
+
+    @POST
+    @Path("upload-photo")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response getPhoto(
+            @Auth User user,
+            @FormDataParam("photo") final InputStream fileInputStream,
+            @FormDataParam("photo") final FormDataContentDisposition fileDetail
+    ) {
+        Response.Status respStatus = Response.Status.OK;
+        if (fileDetail == null) {
+            respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        String uploadedFileLocation = "images/" + fileDetail.getFileName();
+        System.out.println(fileDetail.getFileName());
+        // save it
+        try {
+            File imageFile = new File(uploadedFileLocation);
+            FileUtils.copyInputStreamToFile(fileInputStream, imageFile);
+            userService.saveImage(user, imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String output = "File uploaded to : " + uploadedFileLocation;
+
+        return Response.status(200).build();
+    }
+
+    private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) throws IOException {
+        int read;
+        final int BUFFER_LENGTH = 1024;
+        final byte[] buffer = new byte[BUFFER_LENGTH];
+        OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+        while ((read = uploadedInputStream.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        out.flush();
+        out.close();
+
     }
 
     @GET

@@ -17,6 +17,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Created by gkvm on 5/27/17.
@@ -33,6 +34,7 @@ public class User implements Principal {
     private String email;
     private String phone;
     private String picture;
+    private List<Double> model;
     private String password;
     @Property("is_deleted")
     private Boolean isDeleted;
@@ -123,5 +125,9 @@ public class User implements Principal {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public List<Double> getModel() {
+        return model;
     }
 }
