@@ -8,51 +8,88 @@ window.onload = function () {
 
 var video = document.getElementById('video');
 
-// Get access to the camera!
-if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Not adding `{ audio: true }` since we only want video now
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-        video.src = window.URL.createObjectURL(stream);
-        video.play();
-    });
-}
-
 var canvas = document.getElementById('canvas');
 
 // Trigger photo take
-document.getElementById("submit").addEventListener("click", function() {
+document.getElementById("submit").addEventListener("click", function () {
     uploadPhoto()
 });
+let image;
 
-function uploadPhoto(){
-    var image = new Image();
-    image.src = canvas.toDataURL("image/png");
-    console.log("save");
-    console.log(image.src);
+function uploadPhoto() {
+    let dataURL = canvas.toDataURL("image/png");
+    console.log("h"+dataURL);
 
+    image = canvas.toDataURL();
+    console.log(image);
+    let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
+    let blob = base64ToBlob(base64ImageContent, 'image/jpg');
+
+    const blobUrl = URL.createObjectURL(blob);
+    const img = document.createElement('img');
+    img.src = blobUrl;
+    document.body.appendChild(img);
+
+    let formData = new FormData();
+    formData.append('photo', blob, "i.jpg");
     $.ajax({
         type: "POST",
         url: baseUrl + '/candidate/upload-photo',
-        data: {
-            "Authorization": `Bearer ` + loginInfo.token
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        headers: {
+            'Authorization': 'Bearer ' + loginInfo.token
         },
-        dataType: "multipart/form-data",
         success: function success(json) {
             console.log("success.");
-            if (json != null) {
-                console.log(json);
-                localStorage.setItem('user', JSON.stringify(json));
-                window.location = "/list.html";
-            } else {
-                $('#login-form-error').html("Something broke.");
-            }
+            //window.location = "/list.html";
         },
         error: function error(xhr, ajaxOptions, thrownError) {
-            $('#login-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log('Error in sending photo ' + xhr.responseText);
+            console.log('Error upload ' + xhr.responseText);
         }
     });
-    return image;
+}
+
+function base64ToBlob(base64, mime) {
+    mime = mime || '';
+    var sliceSize = 1024;
+    var byteChars = window.atob(base64);
+    var byteArrays = [];
+    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+        var slice = byteChars.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, {type: mime});
+}
+
+function photoUpload(params) {
+    console.log('inside photo upload', params);
+    let xhr = new XMLHttpRequest();
+    let body = new FormData();
+    body.append('photo', params);
+    console.log(body);
+    xhr.open('POST', baseUrl + '/candidate/upload-photo');
+    xhr.setRequestHeader('Authorization', `Bearer ${loginInfo.token}`);
+    xhr.send(body);
+    console.log(xhr);
+    xhr.onreadystatechange = (e) => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log('working', xhr.responseText);
+            /*
+            return callback(JSON.parse(xhr.responseText));*/
+        } else {
+            console.log('error', xhr.responseText);
+            null
+        }
+    }
 }
 
 function initializeVideoRendering() {

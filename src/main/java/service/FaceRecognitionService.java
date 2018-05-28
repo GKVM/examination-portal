@@ -51,6 +51,7 @@ public class FaceRecognitionService {
 
             if (apiResponse.getStatus() != Response.Status.OK.getStatusCode()) {
                 apiResponse.getEntity();
+
                 throw new WebApplicationException("Unable to connect to server.");
             } else {
                 String responseMessage = apiResponse.readEntity(String.class);

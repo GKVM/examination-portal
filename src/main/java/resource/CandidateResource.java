@@ -90,7 +90,6 @@ public class CandidateResource {
         }
         out.flush();
         out.close();
-
     }
 
     @GET
