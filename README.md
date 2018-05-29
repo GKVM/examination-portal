@@ -8,10 +8,8 @@ mvn install
 java -jar <path/filename>
 ```
 
-## running Pyhthon server
+## running Python server
 ```
-python3 face-recogn,py
+python3 recognition.py
 
-
-## Update database urls
 ```
