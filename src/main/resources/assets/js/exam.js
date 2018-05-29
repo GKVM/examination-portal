@@ -163,8 +163,10 @@ function initializeVideoRendering() {
 }
 
 function processFaceDetectionTime(){
-
-  }
+    if(!isverified||(isverified && !isdetected)){
+            durationUndetected += 1000;
+    }
+}
 
 function showQuestionLinks() {
     // let questionsSerialized = localStorage.getItem('questions');
