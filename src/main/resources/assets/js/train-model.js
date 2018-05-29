@@ -110,7 +110,7 @@ function initializeVideoRendering() {
         
         if (event.data.length === 1) {
             $('#save-button').removeClass("disabled");
-            $('#is-detected').text("face detected");console.log(event.data.length);
+            $('#is-detected').text("face detected");
             //console.log("one detected");
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
         } else {

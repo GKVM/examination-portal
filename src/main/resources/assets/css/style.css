@@ -20,6 +20,10 @@
     font-size: 22px;
 }
 
+.overlay{
+    display: none
+}
+
 .message-error {
     color: orange;
 }
@@ -37,6 +41,7 @@
     background: lightcyan;
 }
 
+
 .options{
-    ;
+    
 }

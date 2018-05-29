@@ -1,12 +1,9 @@
-let info;
-let test = {
-    'id': "",
-    'name': "Mock test name"
-};
+let infoData;
 let questions;
 let numberOfQuestions;
 let currentQuestionNumber = 1;
 let responses = [];
+let isExamQCovered = false
 
 window.onload = function () {
     initializeVideoRendering();
@@ -15,9 +12,9 @@ window.onload = function () {
 
 function fetchInitialData() {
     let serializedData = localStorage.getItem('login');
-    info = JSON.parse(serializedData);
+    infoData = JSON.parse(serializedData);
     console.log("User ");
-    console.log(info);
+    console.log(infoData);
     showCandidateInfo();
     questions = JSON.parse(localStorage.getItem("questions"));
     numberOfQuestions = questions.length;
@@ -25,8 +22,23 @@ function fetchInitialData() {
 }
 
 function showCandidateInfo() {
-    $('#username').text(info.name);
+    $('#username').text(infoData.name);
 }
+
+document.getElementById("exam-authorize").addEventListener("click", function () {
+    photoCheck()
+});
+
+setInterval(function(){ 
+    photoCheck()
+}, 20000);
+
+var canvas = document.getElementById('canvas');
+
+//Initializing image
+let image;
+var examDiv = document.getElementsByClassName("exam-container")[0]
+var overlay = document.getElementsByClassName("overlay")[0]
 
 function photoCheck() {
     console.log("Checking image");
@@ -34,12 +46,13 @@ function photoCheck() {
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
     let formData = new FormData();
-    formData.append('photo', blob, "c.jpg");
+    formData.append('photo', blob, "ce.jpg");
     formData.append('user_id', infoData.userId);
     console.log(infoData.userId)
+    var resource =  baseUrl + '/device/verify?user=' + infoData.userId
     $.ajax({
         type: "POST",
-        url: baseUrl + '/device/verify',
+        url: resource,
         cache: false,
         contentType: false,
         processData: false,
@@ -49,17 +62,22 @@ function photoCheck() {
             console.log("success.");
             if(json.verified){
                 console.log("Verified")
-                window.location = "/exam.html";
+                if(isExamQCovered){
+                    isExamQCovered = false;
+                    examDiv.style.display = "block";
+                    overlay.style.display = "none";
+                }
+            } else {
+                console.log("Wrong face")
+                if(!isExamQCovered){
+                    isExamQCovered = true
+                    examDiv.style.display = "none";
+                    overlay.style.display = "block";
+                }
             }
-            wait(1000)
-            setTimeout(rotator,5000);
-
         },
         error: function error(xhr, ajaxOptions, thrownError) {
             console.log('Error upload ' + xhr.responseText);
-            wait(1000)
-            setTimeout(rotator,5000);
-
         }
     });
 }
@@ -77,12 +95,23 @@ function initializeVideoRendering() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
             context.strokeStyle = '#a64ceb';
-            context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
             context.fillStyle = "#fff";
-            context.fillText(`x: ${rect.x}px`, rect.x + rect.width + 5, rect.y + 11);
-            context.fillText(`y: ${rect.y}px`, rect.x + rect.width + 5, rect.y + 22);
         });
+        
+        if (event.data.length === 1) {
+            $('#save-button').removeClass("disabled");
+            $('#isDetected').text("face detected");//console.log(event.data.length);
+            //console.log("one detected");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            //photoCheck()
+        } else {
+            $('#save-button').addClass("disabled");
+            //console.log(event.data.length);
+            $('#isDetected').text("face not detected");
+            //context.clearRect(0, 0, canvas.width, canvas.height)
+        }
+        //context.clearRect(0, 0, canvas.width, canvas.height);
     });
     let gui = new dat.GUI();
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
@@ -133,8 +162,8 @@ function submitResponseFinal() {
         type: "POST",
         url: baseUrl + '/device/submit-reply',
         data: {
-            "test": test.id,
-            "user": user.id,
+            "test": infoData.testId,
+            "user": infoData.userId,
         },
         dataType: "json",
         success: function success(json) {
@@ -162,8 +191,8 @@ function submitOneResponse() {
         type: "POST",
         url: baseUrl + '/device/upload',
         data: {
-            "test": test.id,
-            "user": user.id
+            "test": infoData.testId,
+            "user": infoData.userId
         },
         dataType: "json",
         success: function success(json) {
@@ -197,6 +226,24 @@ function nextQuestion() {
 function clearResponse() {
     console.log("Clear response");
     $('.options').prop('checked', false);
+}
+
+function base64ToBlob(base64, mime) {
+    mime = mime || '';
+    var sliceSize = 1024;
+    var byteChars = window.atob(base64);
+    var byteArrays = [];
+    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+        var slice = byteChars.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, {type: mime});
 }
 
 function getBase64Image(img) {

@@ -37,7 +37,7 @@ public class UserService {
     private RegistrationDao registrationDao;
     private FaceRecognitionService faceRecognitionService;
     private transient final String secret;
-    private transient final static long EXPIRY_MILLIS = 60 * 60 * 1000;
+    private transient final static long EXPIRY_MILLIS = 10 * 60 * 60 * 1000;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final String API_SERVER = "http://localhost:5001";
 

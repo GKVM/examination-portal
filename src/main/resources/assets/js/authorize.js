@@ -25,10 +25,9 @@ let image;
 function photoCheck() {
     console.log("Checking image");
     image = canvas.toDataURL("image/jpg");
-    console.log(image)
+    //console.log(image)
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
-
 
     const blobUrl = URL.createObjectURL(blob);
     const img = document.createElement('img');
@@ -36,7 +35,7 @@ function photoCheck() {
     let formData = new FormData();
     formData.append('photo', blob, "c.jpg");
     //formData.append('user_id', infoData.userId);
-    console.log(infoData.userId)
+    console.log("User id: " + infoData.userId)
     var resource =  baseUrl + '/device/verify?user=' + infoData.userId
     $.ajax({
         type: "POST",
@@ -47,11 +46,13 @@ function photoCheck() {
         data: formData,
         
         success: function success(json) {
-            console.log(json.verified)
-            console.log("success.");
             if(json.verified){
                 console.log("Verified")
                 window.location = "/exam.html";
+                $("#isIdentified").text("Authorized");
+            } else {
+                console.log("Not identified")
+                $("#isIdentified").text("Face not idetified");
             }
         },
         error: function error(xhr, ajaxOptions, thrownError) {
@@ -78,13 +79,13 @@ function initializeVideoRendering() {
         });
         
         if (event.data.length === 1) {
-            $('#save-button').removeClass("disabled");
-            $('#isDetected').text("face detected");console.log(event.data.length);
+            $('#save-btn').removeClass("disabled");
+            $('#isDetected').text("face detected");//console.log(event.data.length);
             //console.log("one detected");
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             //photoCheck()
         } else {
-            $('#save-button').addClass("disabled");
+            $('#save-btn').addClass("disabled");
             //console.log(event.data.length);
             $('#isDetected').text("face not detected");
             //context.clearRect(0, 0, canvas.width, canvas.height)
@@ -92,13 +93,14 @@ function initializeVideoRendering() {
 
         //context.clearRect(0, 0, canvas.width, canvas.height);
 
-    
+
     });
     let gui = new dat.GUI();
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
     gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
+
 function base64ToBlob(base64, mime) {
     mime = mime || '';
     var sliceSize = 1024;
