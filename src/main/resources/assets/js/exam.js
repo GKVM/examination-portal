@@ -8,9 +8,44 @@ let isExamQCovered = false
 window.onload = function () {
     initializeVideoRendering();
     fetchInitialData();
+    updateTime()
 };
 
+var eventTime= new Date().getTime() + 2 * 60 * 60 * 1000; 
+let durationUndetected = 0;
+let durationNotDetectedTime = 1 * 60 * 1000;
+
+let isdetected = true;
+let isverified = false;
+
+function updateTime(){
+    var currentTime = new Date().getTime();
+    var diffTime = eventTime - currentTime;
+    var duration = moment.duration(diffTime);
+    $('#test-remaining-time').text(duration.hours() + ":" + duration.minutes() + ":" + duration.seconds())
+    var durationFaceUndetected = moment.duration(durationUndetected);
+    $('#test-face-not-detected-duration').text(durationFaceUndetected.hours() + ":" + durationFaceUndetected.minutes() + ":" + durationFaceUndetected.seconds())
+    processFaceDetectionTime()
+    console.log("updated")
+}
+
+/*
+$(document).ready(function(){
+    var then = $('#then'),
+        date = moment(new Date(then.attr('data-date'))),
+        update = function(){
+                   then.html(date.fromNow());
+                 };
+    
+    update();
+    setInterval(update, 60000);
+  });
+  */
+
+
+
 function fetchInitialData() {
+    setInterval(updateTime,1000)
     let serializedData = localStorage.getItem('login');
     infoData = JSON.parse(serializedData);
     console.log("User ");
@@ -62,12 +97,14 @@ function photoCheck() {
             console.log("success.");
             if(json.verified){
                 console.log("Verified")
+                isverified = true;
                 if(isExamQCovered){
                     isExamQCovered = false;
                     examDiv.style.display = "block";
                     overlay.style.display = "none";
                 }
             } else {
+                isverified = false;
                 console.log("Wrong face")
                 if(!isExamQCovered){
                     isExamQCovered = true
@@ -103,12 +140,18 @@ function initializeVideoRendering() {
             $('#save-button').removeClass("disabled");
             $('#isDetected').text("face detected");//console.log(event.data.length);
             //console.log("one detected");
+            isdetected = true;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             //photoCheck()
         } else {
             $('#save-button').addClass("disabled");
             //console.log(event.data.length);
             $('#isDetected').text("face not detected");
+            isdetected = false;
+            if(durationUndetected> durationNotDetectedTime){
+                console.log("Face not detected for maximum time.")
+                alert("Face not detected for maximum time.")
+            }
             //context.clearRect(0, 0, canvas.width, canvas.height)
         }
         //context.clearRect(0, 0, canvas.width, canvas.height);
@@ -118,6 +161,10 @@ function initializeVideoRendering() {
     gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
+
+function processFaceDetectionTime(){
+
+  }
 
 function showQuestionLinks() {
     // let questionsSerialized = localStorage.getItem('questions');
