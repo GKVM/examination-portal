@@ -100,6 +100,9 @@ public class HubDeviceService {
 
             System.out.println("Writing");
             User user = userDao.getUser(userId).orElseThrow(() -> new WebApplicationException(""));
+
+            System.out.println("userId = " + userId);
+
             Boolean result = faceRecognitionService.verifyImage(file, user.getModel());
             return new Authenticated(result);
         } catch (IOException e) {

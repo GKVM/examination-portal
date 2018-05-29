@@ -9,12 +9,12 @@ let currentQuestionNumber = 1;
 let responses = [];
 
 window.onload = function () {
-    //initializeVideoRendering();
+    initializeVideoRendering();
     fetchInitialData();
 };
 
 function fetchInitialData() {
-    let serializedData = localStorage.getItem('user');
+    let serializedData = localStorage.getItem('login');
     info = JSON.parse(serializedData);
     console.log("User ");
     console.log(info);
@@ -26,6 +26,42 @@ function fetchInitialData() {
 
 function showCandidateInfo() {
     $('#username').text(info.name);
+}
+
+function photoCheck() {
+    console.log("Checking image");
+    image = canvas.toDataURL("image/jpg");
+    let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
+    let blob = base64ToBlob(base64ImageContent, 'image/jpg');
+    let formData = new FormData();
+    formData.append('photo', blob, "c.jpg");
+    formData.append('user_id', infoData.userId);
+    console.log(infoData.userId)
+    $.ajax({
+        type: "POST",
+        url: baseUrl + '/device/verify',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function success(json) {
+            console.log(json.verified)
+            console.log("success.");
+            if(json.verified){
+                console.log("Verified")
+                window.location = "/exam.html";
+            }
+            wait(1000)
+            setTimeout(rotator,5000);
+
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            console.log('Error upload ' + xhr.responseText);
+            wait(1000)
+            setTimeout(rotator,5000);
+
+        }
+    });
 }
 
 function initializeVideoRendering() {
@@ -161,6 +197,18 @@ function nextQuestion() {
 function clearResponse() {
     console.log("Clear response");
     $('.options').prop('checked', false);
+}
+
+function getBase64Image(img) {
+    let canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    let dataURL = canvas.toDataURL("image/png");
+
+    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
 //===internal

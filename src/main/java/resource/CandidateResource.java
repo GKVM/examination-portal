@@ -2,6 +2,7 @@ package resource;
 
 import dto.Test;
 import dto.User;
+import dto.response.LoginToExam;
 import dto.response.SignInResponse;
 import io.dropwizard.auth.Auth;
 import org.apache.commons.io.FileUtils;
@@ -79,6 +80,18 @@ public class CandidateResource {
 
         return Response.status(200).build();
     }
+
+
+    @GET
+    @Path("mock-signin")
+    public LoginToExam loginForExamMock(
+            @Auth User user,
+            @QueryParam("registration") String registrationId,
+            @QueryParam("password") String password
+    ) {
+        return userService.mockLogin(user, registrationId, password);
+    }
+
 
     private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) throws IOException {
         int read;

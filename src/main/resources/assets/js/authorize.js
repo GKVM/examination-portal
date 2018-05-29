@@ -6,32 +6,46 @@ window.onload = function () {
 let infoData;
 
 function loadInfo() {
-    let serializedData = localStorage.getItem('user');
+    let serializedData = localStorage.getItem('login');
     infoData = JSON.parse(serializedData);
     console.log("User ");
     console.log(infoData);
 }
 
-document.getElementById("save-button").addEventListener("click", function () {
-    uploadPhoto()
+var video = document.getElementById('video');
+
+document.getElementById("save-btn").addEventListener("click", function () {
+    photoCheck()
 });
 
+var canvas = document.getElementById('canvas');
+
+//Initializing image
+let image;
 function photoCheck() {
     console.log("Checking image");
     image = canvas.toDataURL("image/jpg");
+    console.log(image)
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
+
+
+    const blobUrl = URL.createObjectURL(blob);
+    const img = document.createElement('img');
+
     let formData = new FormData();
     formData.append('photo', blob, "c.jpg");
-    formData.append('user_id', infoData.userId);
+    //formData.append('user_id', infoData.userId);
     console.log(infoData.userId)
+    var resource =  baseUrl + '/device/verify?user=' + infoData.userId
     $.ajax({
         type: "POST",
-        url: baseUrl + '/device/verify',
+        url: resource,
         cache: false,
         contentType: false,
         processData: false,
         data: formData,
+        
         success: function success(json) {
             console.log(json.verified)
             console.log("success.");
@@ -39,15 +53,9 @@ function photoCheck() {
                 console.log("Verified")
                 window.location = "/exam.html";
             }
-            wait(1000)
-            setTimeout(rotator,5000);
-
         },
         error: function error(xhr, ajaxOptions, thrownError) {
             console.log('Error upload ' + xhr.responseText);
-            wait(1000)
-            setTimeout(rotator,5000);
-
         }
     });
 }
@@ -61,27 +69,36 @@ function initializeVideoRendering() {
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
     tracking.track(video, tracker, {camera: true});
-
     tracker.on('track', function (event) {
-
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
-            photoCheck();
-            //console.log('\n rect ', rect)
             context.strokeStyle = '#a64ceb';
-            context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
             context.fillStyle = "#fff";
-            context.fillText(`x: ${rect.x}px`, rect.x + rect.width + 5, rect.y + 11);
-            context.fillText(`y: ${rect.y}px`, rect.x + rect.width + 5, rect.y + 22);
         });
+        
+        if (event.data.length === 1) {
+            $('#save-button').removeClass("disabled");
+            $('#isDetected').text("face detected");console.log(event.data.length);
+            //console.log("one detected");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            //photoCheck()
+        } else {
+            $('#save-button').addClass("disabled");
+            //console.log(event.data.length);
+            $('#isDetected').text("face not detected");
+            //context.clearRect(0, 0, canvas.width, canvas.height)
+        }
+
+        //context.clearRect(0, 0, canvas.width, canvas.height);
+
+    
     });
     let gui = new dat.GUI();
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
     gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
-
 function base64ToBlob(base64, mime) {
     mime = mime || '';
     var sliceSize = 1024;
@@ -98,31 +115,6 @@ function base64ToBlob(base64, mime) {
         byteArrays.push(byteArray);
     }
     return new Blob(byteArrays, {type: mime});
-}
-
-function saveFullFrame() {
-    let canvas = document.getElementById('canvas');
-    console.log("Saving image");
-    /*let img = canvas.toDataURL();*/
-    let imgData = canvas.toDataURL();
-    localStorage.setItem("imgData", imgData);
-    /*document.getElementById("theimage").src = canvas.toDataURL();*/
-}
-
-function takeSnap() {
-    console.log("taking snap");
-    let snap = captureCanvas();
-    console.log(snap);
-    let bannerImg = document.getElementById('11-img');
-    bannerImg.src = snap
-}
-
-function captureCanvas() {
-    let canvas = document.getElementById('canvas');
-    if (canvas.getContext) {
-        let ctx = canvas.getContext("2d");
-        return canvas.toDataURL("image/png");
-    }
 }
 
 function getBase64Image(img) {

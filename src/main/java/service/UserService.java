@@ -9,6 +9,7 @@ import dto.JwtPayload;
 import dto.Registration;
 import dto.Test;
 import dto.User;
+import dto.response.LoginToExam;
 import dto.response.SignInResponse;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -158,6 +159,30 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public LoginToExam mockLogin(User user, String registration, String password) {
+
+        if(!(registration.equals("mock") && password.equals("2000"))){
+            throw new WebApplicationException("Invalid credentials. Use the given credentials for mock exam", Response.Status.UNAUTHORIZED);
+        }
+
+//        Registration registrationInfo = registrationDao.getRegistration(registration)
+//                .orElseThrow(() -> new WebApplicationException("Invalid credentials", javax.ws.rs.core.Response.Status.UNAUTHORIZED));
+//        if (!password.equals(registrationInfo.getPassword())) {
+//            throw new WebApplicationException("Invalid credentials", Response.Status.UNAUTHORIZED);
+//        }
+
+        return new LoginToExam(
+                user.getId(),
+                new ObjectId("5b0a3770fcb6b05c2d3fa058"),
+                new ObjectId("5b0a3959fcb6b05c2d3fa0d7"),
+                user.getCompleteName(),
+                user.getEmail(),
+                user.getPhone(),
+                "",
+                "Mock examination"
+        );
     }
 
     private static Integer getRandomNumber() {

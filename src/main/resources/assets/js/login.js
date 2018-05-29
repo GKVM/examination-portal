@@ -5,19 +5,40 @@ function showLogin() {
 
 var info;
 
+var isMock = false;
+
 function signIn() {
+
+    if(window.location.href.indexOf("mock-test=true")>0){
+        isMock = true;
+    }
+
     console.log("sign in");
     console.log($('#login-form').serialize());
+
+    let path = baseUrl + '/device/login?'
+    let header = {};
+    if(isMock){
+        let serializedData = localStorage.getItem('user');
+        let user = JSON.parse(serializedData);
+
+        path = baseUrl + '/candidate/mock-signin?'
+        header = {
+            'Authorization': 'Bearer ' + user.token
+        }
+    }
+
     $.ajax({
         type: "GET",
-        url: baseUrl + '/device/login?',
+        url: path,
         data: $('#login-form').serialize(),
+        headers: header,
         success: function success(json) {
             console.log("success.");
             if (json != null) {
                 console.log(json);
                 info = json;
-                localStorage.setItem('user', JSON.stringify(json));
+                localStorage.setItem('login', JSON.stringify(json));
                 getQuestions();
                 // window.location = "/authorize.html";
             } else {

@@ -30,6 +30,8 @@ public class Test {
     private String name;
     @NotSaved
     private Boolean hasApplied;
+    @NotSaved
+    private String number;
     private Boolean isDeleted;
 
     public Test() {
@@ -38,11 +40,13 @@ public class Test {
     @JsonCreator
     public Test(
             @JsonProperty("id") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId id,
-            @JsonProperty("name") String name
+            @JsonProperty("name") String name,
+            @JsonProperty("number") String number
     ) {
         this.id = id;
         this.name = name;
         this.hasApplied = false;
+        this.number = number;
         this.isDeleted = false;
     }
 
@@ -61,5 +65,13 @@ public class Test {
 
     public void setHasApplied(Boolean hasApplied) {
         this.hasApplied = hasApplied;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

@@ -18,6 +18,7 @@ document.getElementById("save-button").addEventListener("click", function () {
 let image;
 
 function uploadPhoto() {
+
     image = canvas.toDataURL("image/jpg");
     console.log(image);
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
@@ -101,24 +102,27 @@ function initializeVideoRendering() {
     tracking.track(video, tracker, {camera: true});
     tracker.on('track', function (event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (event.data.length === 1) {
-            $('#save-button').removeClass("disabled");
-            $('#is-detected').text("face detected");console.log(event.data.length);
-            console.log("one detected");
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        } else {
-            $('#save-button').addClass("disabled");
-            console.log(event.data.length);
-            $('#is-detected').text("face not detected");
-            //context.clearRect(0, 0, canvas.width, canvas.height)
-        }
-
         event.data.forEach(function (rect) {
             context.strokeStyle = '#a64ceb';
             context.font = '11px Helvetica';
             context.fillStyle = "#fff";
         });
+        
+        if (event.data.length === 1) {
+            $('#save-button').removeClass("disabled");
+            $('#is-detected').text("face detected");console.log(event.data.length);
+            //console.log("one detected");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        } else {
+            $('#save-button').addClass("disabled");
+            //console.log(event.data.length);
+            $('#is-detected').text("face not detected");
+            //context.clearRect(0, 0, canvas.width, canvas.height)
+        }
+
+        //context.clearRect(0, 0, canvas.width, canvas.height);
+
+    
     });
     let gui = new dat.GUI();
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
@@ -131,7 +135,6 @@ function saveFullFrame() {
     console.log("Saving image");
     /*let img = canvas.toDataURL();*/
     let imgData = canvas.toDataURL();
-    localStorage.setItem("imgData", imgData);
     /*document.getElementById("theimage").src = canvas.toDataURL();*/
 }
 
