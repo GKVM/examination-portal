@@ -37,11 +37,13 @@
 }
 
 .exam-container {
-    height: 600px;
     background: lightcyan;
 }
 
-
+.question-div {
+    height: 600px;
+    background: lightcyan;
+}
 .options{
     
 }

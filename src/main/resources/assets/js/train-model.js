@@ -20,7 +20,7 @@ let image;
 function uploadPhoto() {
 
     image = canvas.toDataURL("image/jpg");
-    console.log(image);
+    //console.log(image);
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
     let blob = base64ToBlob(base64ImageContent, 'image/jpg');
 

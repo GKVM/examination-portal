@@ -8,17 +8,18 @@ let isExamQCovered = false
 window.onload = function () {
     initializeVideoRendering();
     fetchInitialData();
+    //photoCheck()
     updateTime()
 };
 
-var eventTime= new Date().getTime() + 2 * 60 * 60 * 1000; 
+var eventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
 let durationUndetected = 0;
 let durationNotDetectedTime = 1 * 60 * 1000;
 
 let isdetected = true;
 let isverified = false;
 
-function updateTime(){
+function updateTime() {
     var currentTime = new Date().getTime();
     var diffTime = eventTime - currentTime;
     var duration = moment.duration(diffTime);
@@ -26,29 +27,12 @@ function updateTime(){
     var durationFaceUndetected = moment.duration(durationUndetected);
     $('#test-face-not-detected-duration').text(durationFaceUndetected.hours() + ":" + durationFaceUndetected.minutes() + ":" + durationFaceUndetected.seconds())
     processFaceDetectionTime()
-    console.log("updated")
 }
 
-/*
-$(document).ready(function(){
-    var then = $('#then'),
-        date = moment(new Date(then.attr('data-date'))),
-        update = function(){
-                   then.html(date.fromNow());
-                 };
-    
-    update();
-    setInterval(update, 60000);
-  });
-  */
-
-
-
 function fetchInitialData() {
-    setInterval(updateTime,1000)
+    setInterval(updateTime, 1000)
     let serializedData = localStorage.getItem('login');
     infoData = JSON.parse(serializedData);
-    console.log("User ");
     console.log(infoData);
     showCandidateInfo();
     questions = JSON.parse(localStorage.getItem("questions"));
@@ -64,7 +48,7 @@ document.getElementById("exam-authorize").addEventListener("click", function () 
     photoCheck()
 });
 
-setInterval(function(){ 
+setInterval(function () {
     photoCheck()
 }, 20000);
 
@@ -74,8 +58,13 @@ var canvas = document.getElementById('canvas');
 let image;
 var examDiv = document.getElementsByClassName("exam-container")[0]
 var overlay = document.getElementsByClassName("overlay")[0]
+let verifyFaceWhenDetected=false;
 
 function photoCheck() {
+    if(!isdetected){
+        verifyFaceWhenDetected = true;
+        return
+    }
     console.log("Checking image");
     image = canvas.toDataURL("image/jpg");
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
@@ -84,7 +73,7 @@ function photoCheck() {
     formData.append('photo', blob, "ce.jpg");
     formData.append('user_id', infoData.userId);
     console.log(infoData.userId)
-    var resource =  baseUrl + '/device/verify?user=' + infoData.userId
+    var resource = baseUrl + '/device/verify?user=' + infoData.userId
     $.ajax({
         type: "POST",
         url: resource,
@@ -95,10 +84,11 @@ function photoCheck() {
         success: function success(json) {
             console.log(json.verified)
             console.log("success.");
-            if(json.verified){
+            if (json.verified) {
                 console.log("Verified")
                 isverified = true;
-                if(isExamQCovered){
+                verifyFaceWhenDetected = false;
+                if (isExamQCovered) {
                     isExamQCovered = false;
                     examDiv.style.display = "block";
                     overlay.style.display = "none";
@@ -106,7 +96,7 @@ function photoCheck() {
             } else {
                 isverified = false;
                 console.log("Wrong face")
-                if(!isExamQCovered){
+                if (!isExamQCovered) {
                     isExamQCovered = true
                     examDiv.style.display = "none";
                     overlay.style.display = "block";
@@ -119,6 +109,11 @@ function photoCheck() {
     });
 }
 
+let alertCount = 0;
+let alert1 = false;
+let alert2 = false;
+let alert3 = false;
+
 function initializeVideoRendering() {
     let video = document.getElementById('video');
     let canvas = document.getElementById('canvas');
@@ -127,7 +122,9 @@ function initializeVideoRendering() {
     tracker.setInitialScale(4);
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
-    tracking.track(video, tracker, {camera: true});
+    tracking.track(video, tracker, {
+        camera: true
+    });
     tracker.on('track', function (event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
@@ -135,22 +132,43 @@ function initializeVideoRendering() {
             context.font = '11px Helvetica';
             context.fillStyle = "#fff";
         });
-        
+
         if (event.data.length === 1) {
             $('#save-button').removeClass("disabled");
-            $('#isDetected').text("face detected");//console.log(event.data.length);
+            $('#isDetected').text("face detected"); //console.log(event.data.length);
             //console.log("one detected");
             isdetected = true;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            if(verifyFaceWhenDetected){
+                console.log("verifying face as soon as it is detected.")
+                photoCheck();
+            }
             //photoCheck()
         } else {
             $('#save-button').addClass("disabled");
             //console.log(event.data.length);
             $('#isDetected').text("face not detected");
             isdetected = false;
-            if(durationUndetected> durationNotDetectedTime){
-                console.log("Face not detected for maximum time.")
-                alert("Face not detected for maximum time.")
+            if (alertCount == 0) {
+                if (!alert1 && durationUndetected > durationNotDetectedTime) {
+                    console.log("Face not detected for a minute")
+                    alert1 = true;
+                    alertCount = 1;
+                    alert("Face not detected for a minute")
+                }
+            } else if (alertCount == 1) {
+                if (!alert2 && durationUndetected > 2 * durationNotDetectedTime) {
+                    console.log("Face not detected for 2 minutes")
+                    alert2 = true;
+                    alertCount = 2;
+                    alert("Face not detected for 2 minutes. Exam will end if face is not recognized for 4 minutes.")
+                }
+            } else {
+                if (!alert1 && durationUndetected > 4 * durationNotDetectedTime) {
+                    console.log("Face not detected for 4 min ")
+                    alert("Submitting response.")
+                }
             }
             //context.clearRect(0, 0, canvas.width, canvas.height)
         }
@@ -162,9 +180,9 @@ function initializeVideoRendering() {
     gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
 
-function processFaceDetectionTime(){
-    if(!isverified||(isverified && !isdetected)){
-            durationUndetected += 1000;
+function processFaceDetectionTime() {
+    if (!isverified || (isverified && !isdetected)) {
+        durationUndetected += 1000;
     }
 }
 
@@ -173,8 +191,7 @@ function showQuestionLinks() {
     //let questionsResponse = JSON.parse(questionsSerailized);
     console.log("Loaded questions");
     //show question links
-    questions.forEach(function (question) {
-    })
+    questions.forEach(function (question) {})
 }
 
 function renderFromNumber(number) {
@@ -292,7 +309,9 @@ function base64ToBlob(base64, mime) {
         var byteArray = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
     }
-    return new Blob(byteArrays, {type: mime});
+    return new Blob(byteArrays, {
+        type: mime
+    });
 }
 
 function getBase64Image(img) {

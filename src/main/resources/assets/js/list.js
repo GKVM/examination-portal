@@ -18,7 +18,8 @@ function showMockTest() {
 function showCandidateInfo() {
     let serializedData = localStorage.getItem('user');
     loginInfo = JSON.parse(serializedData);
-    $('#user-photo-div').append(`<img src="`+ loginInfo.picture +`">`)
+    if(loginInfo.picture !== undefined)
+        $('#user-photo-div').append(`<img src="`+ loginInfo.picture +`">`)
     $('#username').text(loginInfo.name);
     $('#user-email-value').text(loginInfo.email);
 }

@@ -52,7 +52,7 @@ function photoCheck() {
                 $("#isIdentified").text("Authorized");
             } else {
                 console.log("Not identified")
-                $("#isIdentified").text("Face not idetified");
+                $("#isIdentified").text("Face not identified");
             }
         },
         error: function error(xhr, ajaxOptions, thrownError) {
