@@ -51,7 +51,6 @@ public class FaceRecognitionService {
 
             if (apiResponse.getStatus() != Response.Status.OK.getStatusCode()) {
                 apiResponse.getEntity();
-
                 throw new WebApplicationException("Unable to connect to server.");
             } else {
                 String responseMessage = apiResponse.readEntity(String.class);
@@ -64,9 +63,6 @@ public class FaceRecognitionService {
 
                 return result;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Exception has occured " + e.getMessage());
         } finally {
 //            if (null != multiPart) {
 //                try {
@@ -77,7 +73,6 @@ public class FaceRecognitionService {
 //                }
 //            }
         }
-        return null;
     }
 
     Boolean verifyImage(File photo, List<Double> model) {

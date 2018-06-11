@@ -1,27 +1,32 @@
 'use strict';
 
-function showLogin() {
+var info;
+var isMock = false;
+intialize();
+
+
+function isMockCheck(){
+    if (window.location.href.indexOf("mock-test=true") > 0) {
+        return true;
+    }
+    else
+        return false;
 }
 
-var info;
-
-var isMock = false;
+function intialize(){
+    isMock = isMockCheck();
+    if(isMock){
+        mockCredentials()
+    }
+}
 
 function signIn() {
-
-    if(window.location.href.indexOf("mock-test=true")>0){
-        isMock = true;
-    }
-
-    console.log("sign in");
-    console.log($('#login-form').serialize());
-
+    console.log("sign in for exam");
     let path = baseUrl + '/device/login?'
     let header = {};
-    if(isMock){
+    if (isMock) {
         let serializedData = localStorage.getItem('user');
         let user = JSON.parse(serializedData);
-
         path = baseUrl + '/candidate/mock-signin?'
         header = {
             'Authorization': 'Bearer ' + user.token
@@ -52,6 +57,10 @@ function signIn() {
     });
 }
 
+function mockCredentials(){
+    $('#message-box').html("Mock test credentials: \n Registration ID: 2000\n Password: 2000");
+}
+
 function getQuestions() {
     //this is mock
     //move to login.js
@@ -69,7 +78,6 @@ function getQuestions() {
             }
         },
         error: function error(xhr, ajaxOptions, thrownError) {
-            //alert("Error" + xhr.responseText);
             console.log('Error in getting questions in ' + xhr.responseText);
         }
     });

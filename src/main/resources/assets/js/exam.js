@@ -4,24 +4,24 @@ let numberOfQuestions;
 let currentQuestionNumber = 1;
 let responses = [];
 let isExamQCovered = false
+let testName = "Exam Portal"
 
 window.onload = function () {
     initializeVideoRendering();
     fetchInitialData();
-    //photoCheck()
     updateTime()
 };
 
-var eventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
+var eventDuration = new Date().getTime() + 30 * 60 * 1000;
 let durationUndetected = 0;
 let durationNotDetectedTime = 1 * 60 * 1000;
 
 let isdetected = true;
-let isverified = false;
+let isverified = true;
 
 function updateTime() {
     var currentTime = new Date().getTime();
-    var diffTime = eventTime - currentTime;
+    var diffTime = eventDuration - currentTime;
     var duration = moment.duration(diffTime);
     $('#test-remaining-time').text(duration.hours() + ":" + duration.minutes() + ":" + duration.seconds())
     var durationFaceUndetected = moment.duration(durationUndetected);
@@ -34,6 +34,10 @@ function fetchInitialData() {
     let serializedData = localStorage.getItem('login');
     infoData = JSON.parse(serializedData);
     console.log(infoData);
+    if(infoData.testName!=undefined){
+        testName = infoData.testName
+    }
+    $('#logo-container').text(testName);
     showCandidateInfo();
     questions = JSON.parse(localStorage.getItem("questions"));
     numberOfQuestions = questions.length;
@@ -88,25 +92,33 @@ function photoCheck() {
                 console.log("Verified")
                 isverified = true;
                 verifyFaceWhenDetected = false;
-                if (isExamQCovered) {
-                    isExamQCovered = false;
-                    examDiv.style.display = "block";
-                    overlay.style.display = "none";
-                }
+                blockExam()
             } else {
                 isverified = false;
                 console.log("Wrong face")
-                if (!isExamQCovered) {
-                    isExamQCovered = true
-                    examDiv.style.display = "none";
-                    overlay.style.display = "block";
-                }
+                unblock();
             }
         },
         error: function error(xhr, ajaxOptions, thrownError) {
             console.log('Error upload ' + xhr.responseText);
         }
     });
+}
+
+function blockExam(){
+    if (isExamQCovered) {
+        isExamQCovered = false;
+        examDiv.style.display = "block";
+        overlay.style.display = "none";
+    }
+}
+
+function unblock(){
+    if (!isExamQCovered) {
+        isExamQCovered = true
+        examDiv.style.display = "none";
+        overlay.style.display = "block";
+    }
 }
 
 let alertCount = 0;
@@ -133,28 +145,31 @@ function initializeVideoRendering() {
             context.fillStyle = "#fff";
         });
 
-        if (event.data.length === 1) {
-            $('#save-button').removeClass("disabled");
-            $('#isDetected').text("face detected"); //console.log(event.data.length);
-            //console.log("one detected");
-            isdetected = true;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
 
+        if (event.data.length === 1) {
+            isdetected = true;
+            $('#isDetected').text("Face Detected");
+            
+            $('#recognized').text(isverified?"Authorized":"Unauthorized");
+            
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
             if(verifyFaceWhenDetected){
                 console.log("verifying face as soon as it is detected.")
                 photoCheck();
             }
             //photoCheck()
         } else {
-            $('#save-button').addClass("disabled");
             //console.log(event.data.length);
-            $('#isDetected').text("face not detected");
+            $('#isDetected').text("Face Not Detected");
             isdetected = false;
             if (alertCount == 0) {
                 if (!alert1 && durationUndetected > durationNotDetectedTime) {
                     console.log("Face not detected for a minute")
                     alert1 = true;
                     alertCount = 1;
+                    blockExam()
                     alert("Face not detected for a minute")
                 }
             } else if (alertCount == 1) {
@@ -162,11 +177,13 @@ function initializeVideoRendering() {
                     console.log("Face not detected for 2 minutes")
                     alert2 = true;
                     alertCount = 2;
-                    alert("Face not detected for 2 minutes. Exam will end if face is not recognized for 4 minutes.")
+                    blockExam();
+                    alert("Face not detected for 2 minutes. Exam will end if face is not detected for 4 minutes.")
                 }
             } else {
                 if (!alert1 && durationUndetected > 4 * durationNotDetectedTime) {
                     console.log("Face not detected for 4 min ")
+                    blockExam();
                     alert("Submitting response.")
                 }
             }
@@ -174,10 +191,10 @@ function initializeVideoRendering() {
         }
         //context.clearRect(0, 0, canvas.width, canvas.height);
     });
-    let gui = new dat.GUI();
-    gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
-    gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
-    gui.add(tracker, 'stepSize', 1, 5).step(0.1);
+    // let gui = new dat.GUI();
+    // gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
+    // gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
+    // gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 }
 
 function processFaceDetectionTime() {
@@ -269,6 +286,27 @@ function submitOneResponse() {
             console.log('Error sending answer' + xhr.responseText);
         }
     });*/
+}
+
+function submitResponse(){
+    console.log("submit response");
+
+    $.ajax({
+        type: "POST",
+        url: baseUrl + '/device/submit-all',
+        data: {
+            "test": infoData.testId,
+            "user": infoData.userId
+        },
+        dataType: "json",
+        success: function success(json) {
+            console.log("submitted all answer.");
+        },
+        error: function error(xhr, ajaxOptions, thrownError) {
+            $('#login-form-error').html(JSON.parse(xhr.responseText).message);
+            console.log('Error submitting all answer' + xhr.responseText);
+        }
+    });
 }
 
 function previousQuestion() {

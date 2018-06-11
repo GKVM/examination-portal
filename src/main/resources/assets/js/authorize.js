@@ -4,6 +4,7 @@ window.onload = function () {
 };
 
 let infoData;
+var isUploading = false;
 
 function loadInfo() {
     let serializedData = localStorage.getItem('login');
@@ -23,6 +24,10 @@ var canvas = document.getElementById('canvas');
 //Initializing image
 let image;
 function photoCheck() {
+    if(isUploading){
+        return;
+    }
+    isUploading = true;
     console.log("Checking image");
     image = canvas.toDataURL("image/jpg");
     //console.log(image)
@@ -54,8 +59,10 @@ function photoCheck() {
                 console.log("Not identified")
                 $("#isIdentified").text("Face not identified");
             }
+            isUploading = false;
         },
         error: function error(xhr, ajaxOptions, thrownError) {
+            isUploading = false;
             console.log('Error upload ' + xhr.responseText);
         }
     });
@@ -79,11 +86,12 @@ function initializeVideoRendering() {
         });
         
         if (event.data.length === 1) {
+            //photoCheck();
             $('#save-btn').removeClass("disabled");
             $('#isDetected').text("face detected");//console.log(event.data.length);
             //console.log("one detected");
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            //photoCheck()
+            photoCheck()
         } else {
             $('#save-btn').addClass("disabled");
             //console.log(event.data.length);

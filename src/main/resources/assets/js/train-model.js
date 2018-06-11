@@ -6,6 +6,8 @@ window.onload = function () {
     loginInfo = JSON.parse(serializedData);
 };
 
+var isUploading = false;
+
 var video = document.getElementById('video');
 
 var canvas = document.getElementById('canvas');
@@ -18,7 +20,10 @@ document.getElementById("save-button").addEventListener("click", function () {
 let image;
 
 function uploadPhoto() {
-
+    if(isUploading){
+        return;
+    }
+    isUploading = true;
     image = canvas.toDataURL("image/jpg");
     //console.log(image);
     let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
@@ -44,8 +49,10 @@ function uploadPhoto() {
         success: function success(json) {
             console.log("success.");
             window.location = "/list.html";
+            isUploading = false;
         },
         error: function error(xhr, ajaxOptions, thrownError) {
+            isUploading = false;
             console.log('Error upload ' + xhr.responseText);
         }
     });
@@ -66,7 +73,9 @@ function base64ToBlob(base64, mime) {
         var byteArray = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
     }
-    return new Blob(byteArrays, {type: mime});
+    return new Blob(byteArrays, {
+        type: mime
+    });
 }
 
 function photoUpload(params) {
@@ -99,30 +108,37 @@ function initializeVideoRendering() {
     tracker.setInitialScale(4);
     tracker.setStepSize(2);
     tracker.setEdgesDensity(0.1);
-    tracking.track(video, tracker, {camera: true});
+    tracking.track(video, tracker, {
+        camera: true
+    });
     tracker.on('track', function (event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         event.data.forEach(function (rect) {
             context.strokeStyle = '#a64ceb';
+            context.strokeRect(rect.x, rect.y, rect.width, rect.height);
             context.font = '11px Helvetica';
             context.fillStyle = "#fff";
+            //context.fillText(`x: ${rect.x}px`, rect.x + rect.width + 5, rect.y + 11);
+            //context.fillText(`y: ${rect.y}px`, rect.x + rect.width + 5, rect.y + 22);
+
+            //context.drawImage(video, rect.x, rect.y, rect.width, rect.height, 0, 0, canvas.width, canvas.height);
         });
-        
+
         if (event.data.length === 1) {
+            var rect = event.data;
             $('#save-button').removeClass("disabled");
             $('#is-detected').text("face detected");
-            //console.log("one detected");
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            //context.drawImage(video, rect.x, rect.y, rect.width, rect.height, 0, 0, canvas.width, canvas.height);
+            uploadPhoto();
+            //console.log("one detected");
         } else {
             $('#save-button').addClass("disabled");
             //console.log(event.data.length);
             $('#is-detected').text("face not detected");
             //context.clearRect(0, 0, canvas.width, canvas.height)
         }
-
         //context.clearRect(0, 0, canvas.width, canvas.height);
-
-    
     });
     let gui = new dat.GUI();
     gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);

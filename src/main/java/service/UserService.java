@@ -134,8 +134,13 @@ public class UserService {
         return examList.stream().peek(exam -> {
             if (registeredIds.contains(exam.getId())) {
                 exam.setHasApplied(true);
+                exam.setNumber(registrationsOfUser.stream().filter(t -> t.getTestId().equals(exam.getId())).findFirst().get().getRegistration());
             }
         }).collect(Collectors.toList());
+    }
+
+    public void registrationDetails(User user, ObjectId testId) {
+        Test test = examinationDao.getTest(testId).orElseThrow(() -> new WebApplicationException("Test not found."));
     }
 
     public void registerExam(User user, ObjectId testId) {
@@ -163,7 +168,7 @@ public class UserService {
 
     public LoginToExam mockLogin(User user, String registration, String password) {
 
-        if(!(registration.equals("mock") && password.equals("2000"))){
+        if (!(registration.equals("2000") && password.equals("2000"))) {
             throw new WebApplicationException("Invalid credentials. Use the given credentials for mock exam", Response.Status.UNAUTHORIZED);
         }
 

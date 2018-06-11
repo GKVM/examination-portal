@@ -70,11 +70,10 @@ public class HubDeviceService {
         return questions;
     }
 
-    public Integer saveResponse(ResponseModel response, ObjectId testId, ObjectId userId) {
+    public void saveResponse(ResponseModel response, ObjectId testId, ObjectId userId) {
         Responses responses = responseDao.fetchResponsesForQuestionSet(testId, userId).get();
-        // TODO: 27/5/18 Add response.
         responses.getResponses().add(response);
-        return null;
+        responseDao.saveResponse(responses);
     }
 
     public Integer saveFullResponse(List<ResponseModel> responses, ObjectId testId, ObjectId userId) {

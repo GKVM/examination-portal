@@ -12,75 +12,59 @@ import io.dropwizard.jackson.JsonSnakeCase;
 import json.ObjectIdDeserializer;
 import json.ObjectIdSerializer;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Property;
-
-import java.security.Principal;
-import java.util.Date;
+import org.mongodb.morphia.annotations.NotSaved;
 
 /**
  * Created by gkvm on 5/27/17.
  */
 @JsonSnakeCase
-@Entity(value = "test", noClassnameStored = true)
-public class TestUserResponse implements Principal {
+public class TestResponse {
     @Id
     @JsonSerialize(using = ObjectIdSerializer.class)
     @JsonDeserialize(using = ObjectIdDeserializer.class)
     private ObjectId id;
     private String name;
-    private Integer status;
-    private Date test;
-    @Property("is_deleted")
-    private Boolean isDeleted;
-
-    TestUserResponse() {
-    }
+    @NotSaved
+    private Boolean hasApplied;
+    @NotSaved
+    private String number;
 
     @JsonCreator
-    public TestUserResponse(
+    public TestResponse(
             @JsonProperty("id") @JsonSerialize(using = ObjectIdSerializer.class) ObjectId id,
             @JsonProperty("name") String name,
-            @JsonProperty("status") Integer status,
-            @JsonProperty("test") Date test
-    ) {
+            @JsonProperty("number") String number,
+            @JsonProperty("hasApplied") Boolean hasApplied
+            ) {
         this.id = id;
         this.name = name;
-        this.status = status;
-        this.test = test;
-        this.isDeleted = false;
+        this.hasApplied = hasApplied;
+        this.number = number;
     }
 
     public ObjectId getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Boolean getHasApplied() {
+        if (hasApplied == null) return false;
+        return hasApplied;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
+    public void setHasApplied(Boolean hasApplied) {
+        this.hasApplied = hasApplied;
     }
 
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    public String getNumber() {
+        return number;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public Date getTest() {
-        return test;
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

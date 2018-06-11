@@ -14,27 +14,12 @@
     <header>
         <nav class="light-blue lighten-1" role="navigation">
             <div class="nav-wrapper container">
-                <a id="logo-container" href="#" class="brand-logo">Examination portal</a>
-                <ul class="right hide-on-med-and-down">
-                    <li>
-                        <a href="#"></a>
-                    </li>
-                </ul>
-
-                <ul id="nav-mobile" class="sidenav">
-                    <li>
-                        <a href="#"></a>
-                    </li>
-                </ul>
-                <a href="#" data-target="nav-mobile" class="sidenav-trigger">
-                    <i class="material-icons">menu</i>
-                </a>
+                <a id="logo-container" href="javascript:;" class="brand-logo">Examination portal</a>
             </div>
         </nav>
     </header>
     <main>
         <div class="" id="exam-container">
-            <!--<h4 class="orange-text">Exam</h4>-->
             <div class="row">
                 <div class="col s12 m12 l3">
                     <div class="card">
@@ -43,8 +28,8 @@
                                 <span id="username"></span>
                             </div>
                             <div class="row">
-                                <pre id="recognized"></pre>
-                                <pre id="isDetected"></pre>
+
+
                                 <div class="col s12 m6 l12">
                                     <div class="center-block" style="width:320px; height:240px">
                                         <video id="video" style="position: absolute;" width="320" height="240" preload autoplay loop muted></video>
@@ -54,11 +39,13 @@
                                 <div class="col s12 m6 l12">
                                     <pre></pre>
                                     <p>Time left:
-                                        <span id="test-remaining-time"></span>
+                                        <span id="test-remaining-time" class="countdown"></span>
                                     </p>
                                     <p>Time face not detected:
-                                        <span id="test-face-not-detected-duration"></span>
+                                        <span id="test-face-not-detected-duration" class="countdown"></span>
                                     </p>
+                                    <p id="isDetected"></p>
+                                    <p id="recognized"></p>
                                 </div>
                             </div>
                         </div>
@@ -76,12 +63,9 @@
                                     <div class="row">
                                         <div class="col s12 question-div ">
                                             <div>Question:
-                                                <span id="question-number">1</span>
+                                                <span id="question-number"></span>
                                             </div>
                                             <div id="question" class="question">
-                                                Ut sea quidam everti tractatos. Tale graecis est ei, purto dissentias vim at. Et persius omnesque qualisque eam. Ex dico
-                                                integre quo. Vide saepe duo ex, ei hinc quot sit. Cu dicant ubique euripidis
-                                                mei.
                                             </div>
                                             <div class="row"></div>
                                             <form action="#">
@@ -89,7 +73,7 @@
                                                     <div class="row">
                                                         <div class="col s12">
                                                             <label>
-                                                                <input name="options" class="options" type="radio" value="a" />
+                                                                <input name="options" class="options black-text" type="radio" value="a" />
                                                                 <span id="option1">Option</span>
                                                             </label>
                                                         </div>
@@ -116,9 +100,9 @@
                                                                 <input name="options" class="options" type="radio" value="c" />
                                                                 <span id="option4">Option</span>
                                                             </label>
-                                                        </p>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </p>
                                             </form>
                                         </div>
                                     </div>
@@ -130,12 +114,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="overlay">
-                                <div class="row">
-                                    <div class="col s12">
-                                        <div><p></p></div>
-                                <div class="btn" id="exam-authorize">Authorize</div>
-                                </div>
+                        </div>
+                        <div class="overlay">
+                            <div class="row">
+                                <div class="col s12">
+                                    <div>
+                                        <p></p>
+                                    </div>
+                                    <div class="btn" id="exam-authorize">Authorize</div>
                                 </div>
                             </div>
                         </div>
@@ -143,9 +129,8 @@
                 </div>
             </div>
         </div>
+        </div>
     </main>
-
-
 
     <!--  Scripts-->
     <script src="js/jquery-2.1.1.min.js"></script>
@@ -155,8 +140,7 @@
     <script src="js/tracking/tracking.js"></script>
     <script src="js/moment.min.js"></script>
     <script src="js/tracking/data/face-min.js"></script>
-    <script src="js/tracking/data/dat.gui.js"></script>
-
+    <!-- <script src="js/tracking/data/dat.gui.js"></script> -->
 </body>
 
 </html>
