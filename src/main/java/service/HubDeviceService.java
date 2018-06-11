@@ -91,7 +91,7 @@ public class HubDeviceService {
         // save it
         try {
             System.out.println("User id: " + userId);
-            String uploadedFileLocation = "images/" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
+            String uploadedFileLocation = "images/verify" + System.currentTimeMillis() + "--" + fileDetail.getFileName();
             System.out.println(fileDetail.getFileName());
 
             File file = new File(uploadedFileLocation);
