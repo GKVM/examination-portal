@@ -14,8 +14,11 @@ viewRendererConfiguration:
 
 server:
     applicationConnectors:
-    -   type: http
-        port: 9000
+        - type: https
+          port: 9000
+          keyStorePath: example.keystore
+          keyStorePassword: example
+          validateCerts: false
     adminConnectors:
     -   type: http
         port: 9002
