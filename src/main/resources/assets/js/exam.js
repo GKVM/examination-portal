@@ -156,12 +156,12 @@ function initializeVideoRendering() {
             isdetected = true;
             $('#isDetected').text("Face Detected");
             $('#recognized').text(isverified ? "Authorized" : "Unauthorized");
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.drawImage(video, 0, 0, video.width, video.height);
             if(verifyFaceWhenDetected){
                 photoCheck();
             }
         } else {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.drawImage(video, 0, 0, video.width, video.height);
             $('#isDetected').text("Face Not Detected");
             $('#recognized').text(isverified ? "Authorized" : "Unauthorized");
             isdetected = false;

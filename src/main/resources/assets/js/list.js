@@ -18,8 +18,8 @@ function showMockTest() {
 function showCandidateInfo() {
     let serializedData = localStorage.getItem('user');
     loginInfo = JSON.parse(serializedData);
-    if(loginInfo.picture !== undefined)
-        $('#user-photo-div').append(`<img src="`+ loginInfo.picture +`">`)
+    if (loginInfo.picture !== undefined)
+        $('#user-photo-div').append(`<img src="` + loginInfo.picture + `">`)
     $('#username').text(loginInfo.name);
     $('#user-email-value').text(loginInfo.email);
 }
@@ -51,7 +51,7 @@ function showExam(exam) {
     let statusString = "";
     switch (exam.has_applied) {
         case true:
-            statusString = '<a href="javascript:;" class="btn secondary-content">Applied for exam</a>';
+            statusString = 'Applied for exam';
             break;
         case false:
             statusString = `<a href="javascript:;" onclick="registerForExam('` + exam.id + `')" class="btn secondary-content">Apply</a>`;
@@ -61,8 +61,9 @@ function showExam(exam) {
     $('#list-collection').append(`<li class="collection-item avatar">
                             <img src='` + exam.photo + `' alt="" class="circle">
                             <span class="title">` + exam.name + `</span>
-                            <p>` + (exam.organization ? exam.organization : "organization name") + ` <br>
-                            </p>` + statusString + `</li>`)
+                            <p>` + (exam.organization ? exam.organization : "") + `</p>
+                            <p>` + (exam.number ? "Registration ID: " + exam.number : '' ) + `</p>`
+        + statusString + `</li>`)
 }
 
 function registerForExam(examId) {
