@@ -8,7 +8,7 @@ var responses = [];
 var isExamQCovered = false;
 var testName = "Exam Portal";
 
-var eventDuration = new Date().getTime() + 30 * 60 * 1000;
+var eventDuration = new Date().getTime() + 15 * 60 * 1000;
 var durationUndetected = 0;
 var durationNotDetectedTime = 60 * 1000;
 
@@ -59,7 +59,7 @@ document.getElementById("exam-authorize").addEventListener("click", function () 
 });
 
 var verifyTimer = setInterval(function () {
-    if(!isdetected)
+    if (!isdetected)
         verifyFaceWhenDetected = true;
     else
         photoCheck();
@@ -157,7 +157,7 @@ function initializeVideoRendering() {
             $('#isDetected').text("Face Detected");
             $('#recognized').text(isverified ? "Authorized" : "Unauthorized");
             context.drawImage(video, 0, 0, video.width, video.height);
-            if(verifyFaceWhenDetected){
+            if (verifyFaceWhenDetected) {
                 photoCheck();
             }
         } else {
@@ -206,8 +206,8 @@ function initializeVideoRendering() {
 }
 
 function incrementForATime() {
-    continuousFaceUndetected=continuousFaceUndetected+1000;
-    if(continuousFaceUndetected === 10 * 1000){
+    continuousFaceUndetected = continuousFaceUndetected + 1000;
+    if (continuousFaceUndetected === 10 * 1000) {
         console.log("face not detected continuously for 10s.");
         continuousFaceUndetected = 0;
         forceCheckWhenDetected = true;
@@ -227,7 +227,8 @@ function showQuestionLinks() {
     //let questionsResponse = JSON.parse(questionsSerailized);
     console.log("Loaded questions");
     //show question links
-    questions.forEach(function (question) {});
+    questions.forEach(function (question) {
+    });
 }
 
 function renderFromNumber(number) {
@@ -264,13 +265,14 @@ function submitResponseFinal() {
     console.log("Submitting response");
     $.ajax({
         type: "POST",
-        url: baseUrl + '/device/submit-reply',
-        data: {
-            "test": infoData.testId,
-            "user": infoData.userId
-        },
-        dataType: "json",
+        url: baseUrl + '/device/submit-all?test_id=' + infoData.testId + "&user_id=" + infoData.userId,
+        data: responses,
+        contentType: "application/json",
         success: function success(json) {
+            localStorage.removeItem('questions');
+            localStorage.removeItem('user');
+            localStorage.removeItem('login');
+            window.location = "/login.html";
             console.log("submitted answer.");
         },
         error: function error(xhr, ajaxOptions, thrownError) {
@@ -278,8 +280,7 @@ function submitResponseFinal() {
             console.log('Error sending answer' + xhr.responseText);
         }
     });
-    localStorage.removeItem('questions');
-    localStorage.removeItem('user');
+
 }
 
 function submitOneResponse() {
@@ -293,27 +294,6 @@ function submitOneResponse() {
     } else {
         //update
     };
-}
-
-function submitResponse() {
-    console.log("submit response");
-
-    $.ajax({
-        type: "POST",
-        url: baseUrl + '/device/submit-all',
-        data: {
-            "test": infoData.testId,
-            "user": infoData.userId
-        },
-        dataType: "json",
-        success: function success(json) {
-            console.log("submitted all answer.");
-        },
-        error: function error(xhr, ajaxOptions, thrownError) {
-            $('#login-form-error').html(JSON.parse(xhr.responseText).message);
-            console.log('Error submitting all answer' + xhr.responseText);
-        }
-    });
 }
 
 function previousQuestion() {

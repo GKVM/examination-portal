@@ -65,7 +65,8 @@ public class HubDeviceResource {
 
 
     @POST
-    @Path("submit-all-responses")
+    @Path("submit-all")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response submitTest(List<ResponseModel> responsesList,
                                @QueryParam("user_id") ObjectId userId,
                                @QueryParam("test_id") ObjectId testId) {

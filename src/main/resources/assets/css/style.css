@@ -20,7 +20,7 @@
     font-size: 22px;
 }
 
-.overlay{
+.overlay {
     display: none
 }
 
@@ -45,5 +45,6 @@
     background: lightcyan;
 }
 
-.question-color{
+.buttons {
+    margin: 2px 2px 2px 2px !important;
 }
