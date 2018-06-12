@@ -40,7 +40,7 @@ function fetchInitialData() {
     var serializedData = localStorage.getItem('login');
     infoData = JSON.parse(serializedData);
     console.log(infoData);
-    if (infoData.testName != undefined) {
+    if (infoData.testName !== undefined) {
         testName = infoData.testName;
     }
     $('#logo-container').text(testName);
@@ -59,9 +59,9 @@ document.getElementById("exam-authorize").addEventListener("click", function () 
 });
 
 var verifyTimer = setInterval(function () {
-    if (!isdetected)
+    if (!isdetected) {
         verifyFaceWhenDetected = true;
-    else
+    } else
         photoCheck();
 }, 10000);
 
@@ -102,13 +102,13 @@ function photoCheck() {
                 verifyTimer = setInterval(function () {
                     photoCheck();
                 }, 10000);
-                blockExam();
+                showExam();
             } else {
-                clearInterval(verifyTimer);
-                verifyFaceWhenDetected = true;
+                //clearInterval(verifyTimer);
+                //verifyFaceWhenDetected = true;
                 isverified = false;
                 console.log("Wrong face");
-                unblock();
+                blockExam();
             }
         },
         error: function error(xhr, ajaxOptions, thrownError) {
@@ -117,7 +117,7 @@ function photoCheck() {
     });
 }
 
-function blockExam() {
+function showExam() {
     if (isExamQCovered) {
         isExamQCovered = false;
         examDiv.style.display = "block";
@@ -125,7 +125,7 @@ function blockExam() {
     }
 }
 
-function unblock() {
+function blockExam() {
     if (!isExamQCovered) {
         isExamQCovered = true;
         examDiv.style.display = "none";
@@ -136,7 +136,7 @@ function unblock() {
 var alertCount = 0;
 var alert1 = false;
 var alert2 = false;
-var alert3 = false;
+var alertFinal = false;
 var undetectedSchedule;
 var continuousFaceUndetected;
 
@@ -172,7 +172,7 @@ function initializeVideoRendering() {
                 console.log("intialized face detection check for 10 sec")
             }*/
 
-            if (alertCount == 0) {
+            if (alertCount === 0) {
                 if (!alert1 && durationUndetected > durationNotDetectedTime) {
                     console.log("Face not detected for a minute");
                     alert1 = true;
@@ -180,7 +180,7 @@ function initializeVideoRendering() {
                     blockExam();
                     alert("Face not detected for a minute");
                 }
-            } else if (alertCount == 1) {
+            } else if (alertCount === 1) {
                 if (!alert2 && durationUndetected > 2 * durationNotDetectedTime) {
                     console.log("Face not detected for 2 minutes");
                     alert2 = true;
@@ -189,10 +189,11 @@ function initializeVideoRendering() {
                     alert("Face not detected for 2 minutes. Exam will end if face is not detected for 4 minutes.");
                 }
             } else {
-                if (!alert1 && durationUndetected > 4 * durationNotDetectedTime) {
+                if (durationUndetected > 4 * durationNotDetectedTime) {
                     console.log("Face not detected for 4 min ");
                     blockExam();
                     alert("Submitting response.");
+                    submitResponseFinal();
                 }
             }
             //context.clearRect(0, 0, canvas.width, canvas.height)
@@ -286,14 +287,11 @@ function submitResponseFinal() {
 function submitOneResponse() {
     console.log("submit response");
     //@todo Save response in local storage.
-    var responseOptional = responses.search(function (r) {
-        return r.number === currentQuestionNumber;
-    });
-    if (responseOptional == null) {
-        //create new object
-    } else {
-        //update
+    let response = {
+        "number": currentQuestionNumber,
+        "option": 1
     };
+    responses.push(response);
 }
 
 function previousQuestion() {
@@ -304,8 +302,8 @@ function previousQuestion() {
 
 function submitAndNext() {
     console.log("Clicked submit and next");
-    nextQuestion();
     submitOneResponse();
+    nextQuestion();
 }
 
 function nextQuestion() {

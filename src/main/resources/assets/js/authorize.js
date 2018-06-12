@@ -78,7 +78,7 @@ function initializeVideoRendering() {
     tracker.setEdgesDensity(0.1);
     tracking.track(video, tracker, { camera: true });
     tracker.on('track', function (event) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, video.width, video.height);
         event.data.forEach(function (rect) {
             context.strokeStyle = '#a64ceb';
             context.font = '11px Helvetica';
